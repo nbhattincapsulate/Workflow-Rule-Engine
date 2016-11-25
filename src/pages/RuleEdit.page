@@ -1,0 +1,55 @@
+<apex:page id="thepage" controller="RuleEditController">
+    <apex:form id="theform">
+        <apex:pageBlock id="ruleSetBlock" title="{!rulesetRecord.name}">
+            <apex:pageBlockButtons id="rulesetBlockButton">
+                <apex:commandButton value="Save" action="{!}"/>
+                <apex:commandButton value="Delete" action="{!}"/>
+                <apex:commandButton value="Cancel" action="{!}"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection >
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Name" for="rulesetName"/>
+                    <apex:inputfield value="{!rulesetRecord.name}" id="rulesetName"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Active" for="rulesetActive"/>
+                    <apex:inputfield value="{!rulesetRecord.Active__c}" id="rulesetActive"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Created By" for="rulesetCreatedBy"/>
+                    <apex:outputfield value="{!rulesetRecord.CreatedByID}" id="rulesetCreatedBy"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Modified By" for="rulesetModifiedBy"/>
+                    <apex:outputfield value="{!rulesetRecord.CreatedByID}" id="rulesetModifiedBy"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageBlock id="ruleBlock" title="Rule Entries">
+            <apex:pageBlockButtons id="ruleBlockButton">
+                <apex:commandButton value="Save" action="{!}"/>
+                <apex:commandButton value="New Rule" action="{!}"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockTable value="{!workFlowRuleEntrieInnerList}" var="ruleEntries">
+                <apex:column >
+                    
+                </apex:column>
+                <apex:column >
+                    <apex:inputField value="{!ruleEntries.ruleEntry.Active__c}"/>
+                </apex:column>
+                <apex:column >
+                    <apex:inputField value="{!ruleEntries.ruleEntry.Order__c}"/>
+                </apex:column>
+                <apex:column >
+                    <apex:inputField value="{!ruleEntries.ruleEntry.Name}"/>
+                </apex:column>
+                <apex:column >
+                    <apex:outputText value="{!ruleEntries.entryCriteria}"/>
+                </apex:column>
+                <apex:column >
+                    <apex:outputText value="{!ruleEntries.actions}"/>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>    
+    </apex:form>
+</apex:page>

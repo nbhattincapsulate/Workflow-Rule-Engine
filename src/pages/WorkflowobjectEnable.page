@@ -1,0 +1,28 @@
+<apex:page controller="multi_pick_list" >
+<style>
+        .mylist{
+            width:100px;
+            height:80px;
+        }
+    </style>
+    <apex:form >
+        <apex:pageBlock title="Multi Picklist" >
+            <apex:panelGrid columns="3" id="one">
+                <apex:selectList multiselect="true" value="{!selected}" styleclass="mylist">
+             
+                    <apex:selectOptions value="{!nsoptions}" />
+       
+                </apex:selectList>
+                <apex:panelGrid columns="1">
+                    <apex:commandButton value=">>" action="{!addElements}" reRender="one" /> 
+                    <br/>
+                    <apex:commandButton value="<<" action="{!removeElements}" reRender="one" />
+                </apex:panelGrid>
+                <apex:selectList multiselect="true" value="{!removed}" styleclass="mylist">
+                    <apex:selectOptions value="{!soptions}" />
+                </apex:selectList>   
+            </apex:panelGrid>
+        </apex:pageBlock>
+    </apex:form>
+
+</apex:page>
