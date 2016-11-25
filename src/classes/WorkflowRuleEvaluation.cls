@@ -42,7 +42,7 @@ public with sharing class WorkflowRuleEvaluation {
         System.debug('----> Start Workflow: Enter');
         system.debug('==>'+recordIds);
         // get the rules get all types of rules
-        String query ='Select Id,Evaluation_Rule__c,Object_Name__c FROM WorkflowRule__c WHERE Object_Name__c=\''+sobjectName+'\' AND Active__c=true ';
+        String query ='Select Id,Evaluation_Rule__c,Object_Name__c FROM WorkflowRule__c WHERE Object_Name__c=\''+sobjectName+'\' AND Active__c=true AND Active__c=true BETWEEN Effective_Date__c AND Expiration_Date__c';
         isUpdate = !isInsert;
         
         if(!isInsert){
