@@ -42,7 +42,7 @@ public with sharing class WorkflowRuleCriteriaController {
         if (workflowRuleId != null){
             // Get all the scoring rule related to the scoring rule 
 
-            WorkflowRule__c workflowRule = [SELECT Id, Object_Name__c, (SELECT Id, Field_API_Name__c, Field_Type__c, Operator__c, Parent_Object_Field__c, 
+            WorkflowRule__c workflowRule = [SELECT Id, Object_Name__c, (SELECT Id, Field_API_Name__c,Sequence__c, Field_Type__c, Operator__c, Parent_Object_Field__c, 
                                                         Parent_Object_Name__c, Value__c, Relationship_Name__c,Criteria_Object__c,Child_Relationship_Name__c 
                                                             FROM Workflow_Rule_Criterias__r) 
                                                         
@@ -126,7 +126,29 @@ public with sharing class WorkflowRuleCriteriaController {
         // Check counter is not null
         if (counter != null && counter > 0) {
                 this.workflowCriteriaList.remove(counter-1);
+                
         }
+        
+        for(Integer i=0; i<workflowCriteriaList.size();i++){
+        	(workflowCriteriaList.get(i)).counter = i+1;
+        }
+        //WorkflowRuleCriteria__c dellist = new Sequence__c();
+        //dellist.Sequence__c();
+        /*Integer i=1; 
+        for(WorkflowRuleCriteria dellist : workflowCriteriaList){
+			if(dellist.workflowRuleCriteria.Sequence__c!=null){			
+				dellist.workflowRuleCriteria.Sequence__c= i;
+				//dellist.counter=i;
+				i++;
+				}
+				
+				
+        //if(dellist.Sequence <= workflowCriteriaList.counter){
+			//	Sequence--;        
+        
+        //}
+        }*/
+        
         return null;
     }
     
@@ -207,6 +229,7 @@ public with sharing class WorkflowRuleCriteriaController {
         public List<SelectOption>           objectFields                {get; set;} 
         public List<SelectOption>           parentObjectFields          {get; set;} 
         public Integer                      counter                     {get; set;}
+		
 		
 		public boolean iseditable{set;get;}
         public boolean isbetween{set;get;}

@@ -70,6 +70,19 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Advanced_Filter__c</fullName>
+        <description>Filter logic lets you apply Boolean conditions to filters to hone in on the data you’re looking for.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>You can enter filter line numbers in any order. i.e. (1 AND 2) OR 3</inlineHelpText>
+        <label>Advanced Filter</label>
+        <length>18</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Description__c</fullName>
         <externalId>false</externalId>
         <label>Description</label>
@@ -200,6 +213,19 @@ During save the FormatedFilterLogic is calculated based on the value captured on
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Ruleset__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Rule set</label>
+        <referenceTo>Rule_set__c</referenceTo>
+        <relationshipLabel>Workflow Rules</relationshipLabel>
+        <relationshipName>Workflow_Rules</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Status__c</fullName>

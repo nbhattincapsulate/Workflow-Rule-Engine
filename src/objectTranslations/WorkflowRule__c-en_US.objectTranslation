@@ -13,6 +13,11 @@
         <name>Active__c</name>
     </fields>
     <fields>
+        <help><!-- You can enter filter line numbers in any order. i.e. (1 AND 2) OR 3 --></help>
+        <label><!-- Advanced Filter --></label>
+        <name>Advanced_Filter__c</name>
+    </fields>
+    <fields>
         <label><!-- Description --></label>
         <name>Description__c</name>
     </fields>
@@ -68,6 +73,11 @@
     <fields>
         <label><!-- Order --></label>
         <name>Order__c</name>
+    </fields>
+    <fields>
+        <label><!-- Rule set --></label>
+        <name>Ruleset__c</name>
+        <relationshipLabel><!-- Workflow Rules --></relationshipLabel>
     </fields>
     <fields>
         <label><!-- Status --></label>

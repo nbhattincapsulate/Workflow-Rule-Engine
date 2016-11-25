@@ -42,16 +42,23 @@ public with sharing class WorkflowRuleEvaluation {
         System.debug('----> Start Workflow: Enter');
         system.debug('==>'+recordIds);
         // get the rules get all types of rules
-        String query ='Select Id,Evaluation_Rule__c,Object_Name__c FROM WorkflowRule__c WHERE Object_Name__c=\''+sobjectName+'\' AND Active__c=true AND Active__c=true BETWEEN Effective_Date__c AND Expiration_Date__c';
+        String query = 'Select SystemModstamp, OwnerId, Object_Name__c, Name, LastModifiedDate, LastModifiedById, LastActivityDate, IsDeleted, Id, CreatedDate, CreatedById, Active__c, (Select Id, OwnerId, IsDeleted, Name, RecordTypeId, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, LastViewedDate, LastReferencedDate, Active__c, Description__c, DisplayActions__c, DisplayfilterLogic__c, Evaluation_Rule__c, Filter_Logic__c, FormattedFilterLogic__c, Object_Name__c, Order__c, Status__c, Version__c, Effective_Date__c, Expiration_Date__c, Advanced_Filter__c, Ruleset__c From Workflow_Rules__r WHERE Active__c=true ';
+        //String query ='Select Id,Evaluation_Rule__c,Object_Name__c FROM WorkflowRule__c WHERE Object_Name__c=\''+sobjectName+'\' AND Active__c=true';
         isUpdate = !isInsert;
         
         if(!isInsert){
             query+=' AND Evaluation_Rule__c!=\'Record is created\'';
         }
-        
+        query +=') From Rule_set__c WHERE Object_Name__c=\''+sobjectName+'\' AND Active__c=true';
+        //list of rule set
+        list<Rule_set__c> rulesetList = database.query(query);
         //list of rules
-        List<WorkflowRule__c> ruleList = database.query(query);
-        if(ruleList.size()==0) return;
+        List<WorkflowRule__c> ruleList = new list<WorkflowRule__c>();
+        for(Rule_set__c rulesetrecord: rulesetList){
+        	ruleList.addall(rulesetrecord.Workflow_Rules__r);
+        }
+        if(ruleList.size()==0) 
+        return;
         
         Map<Id,WorkflowRule__c> rules = new Map<Id,WorkflowRule__c> (ruleList);
         evaluateWorkflowRules(rules.keySet(),recordIds,sobjectName);

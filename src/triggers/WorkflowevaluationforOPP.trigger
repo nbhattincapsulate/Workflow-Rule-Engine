@@ -3,7 +3,7 @@ Set<Id> Ids=new Set<Id>();
    String sobjName='Opportunity';
     
     
-    //add all the accountids in the set
+    //add all the opportunityids in the set
     for (Opportunity a:trigger.new){
         Ids.add(a.Id);
     }//for 
@@ -12,7 +12,7 @@ Set<Id> Ids=new Set<Id>();
     try{   
      
     
-    //Send that list of created or updated account to the Rule Engine class for evaluation
+    //Send that list of created or updated Opportunity to the Rule Engine class for evaluation
 
     if (!evaluate){       
              WorkflowRuleEvaluation.startWorkflow(Ids,sobjName,Trigger.isInsert);       

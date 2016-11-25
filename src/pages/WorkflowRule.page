@@ -66,6 +66,7 @@
                 <apex:inputField value="{!WorkflowRule__c.Name}" required="true" />
                 <apex:inputField value="{!WorkflowRule__c.Evaluation_Rule__c}" required="true" />
                 <apex:inputField value="{!WorkflowRule__c.Active__c}" />
+                
                 <apex:selectList style="width:12em;" value="{!WorkflowRule__c.Object_Name__c}" multiselect="false" size="1" required="true">
                     <apex:selectOption itemValue="" itemLabel="--None--" />
                     <apex:selectOptions value="{!OrgObjects}" />
@@ -74,9 +75,13 @@
                 <apex:selectList style="width:12em;" value="{!WorkflowRule__c.Filter_Logic__c}" multiselect="false" size="1" >
                     <apex:selectOption itemValue="AND" itemLabel="AND" />
                     <apex:selectOption itemValue="OR" itemLabel="OR" />
-                </apex:selectList>
-                <apex:inputField value="{!WorkflowRule__c.Effective_Date__c}" /> <br/>
-                <apex:inputField value="{!WorkflowRule__c.Expiration_Date__c}" />
+                </apex:selectList> 
+                
+               
+                <apex:inputField value="{!WorkflowRule__c.Effective_Date__c}" /> 
+                 <apex:inputField value="{!WorkflowRule__c.Advanced_Filter__c}"/> 
+                <apex:inputField value="{!WorkflowRule__c.Expiration_Date__c}" /> 
+               
                
                 
             </apex:pageBlockSection>
@@ -132,31 +137,31 @@
                                 <td>
                                     <!-- <apex:inputField value="{!criteria.workflowRuleCriteria.Operator__c}" />-->
                                       <apex:selectList id="chooseOperator" value="{!criteria.workflowRuleCriteria.Operator__c}" size="1" multiselect="false"  rendered="true" styleClass="input-medium span3 multiselect" >
-			                                <apex:selectOptions value="{!criteria.operators}"></apex:selectOptions>
-			                                </apex:selectList>
+                                            <apex:selectOptions value="{!criteria.operators}"></apex:selectOptions>
+                                            </apex:selectList>
                                 </td>
                                 <td>
                                     <!-- <apex:inputField value="{!criteria.dataObject[criteria.selectedField]}" rendered="{!criteria.selectedField != ''}" />
                                     -->
                                     <apex:outputPanel id="Value" rendered="{!if(criteria.isbetween,false,if(criteria.isPicklist,false,if(criteria.isBoolean,false,true)))}"  >
                            
-			                           <apex:inputField value="{!criteria.workflowRuleCriteria.Value__c}" styleClass="input-medium span3"/>
-			                       </apex:outputPanel>
-			                       
-			                       <apex:outputPanel id="ValueCheckbox" rendered="{!if(criteria.isbetween,false,if(criteria.isPicklist,false,if(criteria.isBoolean,true,false)))}"  >
-			                           
-			                           <apex:inputCheckbox value="{!criteria.workflowRuleCriteria.Value__c}" styleClass="input-medium span3"/>
-			                       </apex:outputPanel>
-			                       
-			                       <apex:outputPanel id="ValuePicklist" rendered="{!if(criteria.isBoolean,false,if(criteria.isPicklist,true,false))}"  >
-			                                 
-			                                  <apex:selectList id="chooseValue" value="{!criteria.workflowRuleCriteria.Value__c}" size="1" multiselect="false"  rendered="true" styleClass="input-medium span3 multiselect" >
-			                                <apex:selectOptions value="{!criteria.picklistvalues}"></apex:selectOptions>
-			                                </apex:selectList>
-			                       </apex:outputPanel>
-			                        
+                                       <apex:inputField value="{!criteria.workflowRuleCriteria.Value__c}" styleClass="input-medium span3"/>
+                                   </apex:outputPanel>
+                                   
+                                   <apex:outputPanel id="ValueCheckbox" rendered="{!if(criteria.isbetween,false,if(criteria.isPicklist,false,if(criteria.isBoolean,true,false)))}"  >
+                                       
+                                       <apex:inputCheckbox value="{!criteria.workflowRuleCriteria.Value__c}" styleClass="input-medium span3"/>
+                                   </apex:outputPanel>
+                                   
+                                   <apex:outputPanel id="ValuePicklist" rendered="{!if(criteria.isBoolean,false,if(criteria.isPicklist,true,false))}"  >
+                                             
+                                              <apex:selectList id="chooseValue" value="{!criteria.workflowRuleCriteria.Value__c}" size="1" multiselect="false"  rendered="true" styleClass="input-medium span3 multiselect" >
+                                            <apex:selectOptions value="{!criteria.picklistvalues}"></apex:selectOptions>
+                                            </apex:selectList>
+                                   </apex:outputPanel>
+                                    
 
-			                     
+                                 
                                 </td>
                             </tr>
                         </apex:repeat>
