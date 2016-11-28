@@ -13,7 +13,7 @@
                     <apex:selectOptions value="{!nsoptions}" />
        
                 </apex:selectList>
-                <apex:panelGrid columns="1">
+                <apex:panelGrid columns="1"> 
                     <apex:commandButton value=">>" action="{!addElements}" reRender="one" /> 
                     <br/>
                     <apex:commandButton value="<<" action="{!removeElements}" reRender="one" />
