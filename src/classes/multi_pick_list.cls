@@ -20,7 +20,7 @@ public class multi_pick_list {
     nscities.add(f.getDescribe().getName());
     //scities.add(f.getDescribe().getName());
     }
-populateOptions();
+populateOptions(); 
     }
     public void populateOptions()
   {

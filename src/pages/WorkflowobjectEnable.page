@@ -19,7 +19,7 @@
                     <apex:commandButton value="<<" action="{!removeElements}" reRender="one" />
                 </apex:panelGrid>
                 <apex:selectList multiselect="true" value="{!removed}" styleclass="mylist">
-                    <apex:selectOptions value="{!soptions}" />
+                    <apex:selectOptions value="{!soptions}" /> 
                 </apex:selectList>   
             </apex:panelGrid>
         </apex:pageBlock>
