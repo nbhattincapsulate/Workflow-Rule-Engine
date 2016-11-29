@@ -7,4 +7,5 @@
     <tab>standard-ContentSubscriptions</tab>
     <tab>standard-ContentFavorites</tab>
     <tab>WorkflowRule__c</tab>
+    <tab>Rule_set__c</tab>
 </CustomApplication>

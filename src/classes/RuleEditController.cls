@@ -1,8 +1,26 @@
 public with sharing class RuleEditController {
+
     public Rule_set__c rulesetRecord{get;set;}
     public list<workFlowRuleInner> workFlowRuleEntrieInnerList{get;set;}
+    public Boolean isEdit{get;set;}
+    public String selectedruleEntryID{get;set;}
+    ApexPages.StandardController stdController;
     public RuleEditController(){
         
+    }
+    
+    public RuleEditController(ApexPages.StandardController controller) {
+        if(Apexpages.currentpage().getparameters().get('id') != null){
+            isEdit = true;
+        }else{
+            isEdit = false;
+        }
+        list<string> fieldList = new list<string>{'Name','Active__c','Type__c','Object_Name__c','CreatedById'};
+        controller.addfields(fieldList);
+        rulesetRecord = (Rule_set__c)controller.getRecord();
+        stdController = controller;
+        workFlowRuleEntrieInnerList = new list<workFlowRuleInner>();
+        prepareData();
     }
     
     //Innerclass
@@ -10,5 +28,67 @@ public with sharing class RuleEditController {
         public WorkflowRule__c ruleEntry{get;set;}
         public String entryCriteria{get;set;}
         public String actions{get;set;}
+        //Constructor
+        public workFlowRuleInner(WorkflowRule__c ruleEntry ,String entryCriteria, String actions){
+            this.ruleEntry = ruleEntry ;
+            this.entryCriteria = entryCriteria;
+            this.actions = actions;
+        }
     }
+    
+    //method to redirect to new Rule Page
+    public pageReference gotoNewRule(){
+        pageReference createRulePage = Page.WorkflowRule;
+        createRulePage.setredirect(true);
+        createRulePage.getParameters().put('retURL',Apexpages.currentpage().getUrl());
+        createRulePage.getParameters().put('rulesetID',rulesetRecord.id);
+        createRulePage.getParameters().put('obj',rulesetRecord.Object_Name__c);
+        return createRulePage; 
+    }
+    
+    //Method to override Save Method
+    public void onSave(){
+        stdController.save();
+        isEdit = true;
+    }
+    
+    public pageReference  ruleEntryEdit(){
+        
+        pageReference createRulePage = Page.WorkflowRule;
+        createRulePage.setredirect(true);
+        createRulePage.getParameters().put('retURL',Apexpages.currentpage().getUrl());
+        createRulePage.getParameters().put('id',Apexpages.currentpage().getparameters().get('selectedruleEntryID'));
+        return createRulePage; 
+    }
+    
+   
+    
+    //Method to prepare data onLoad
+    private void prepareData(){
+        if(isEdit){
+            for(WorkflowRule__c workFlowRule : pullAllWorkFlowRules(rulesetRecord.id)){
+                workFlowRuleEntrieInnerList.add(new workFlowRuleInner(workFlowRule,'',''));
+            }
+        }
+    }
+    
+    //Method to save All the entries 
+    public void saveAllEntries(){
+        list<WorkflowRule__c> workFlowRuletoUpsert = new list<WorkflowRule__c>();
+        for(workFlowRuleInner innerEntryRecord : workFlowRuleEntrieInnerList){
+            workFlowRuletoUpsert.add(innerEntryRecord.ruleEntry);
+        }
+        
+        //upsert the record
+        if(workFlowRuletoUpsert.size()>0){
+            upsert workFlowRuletoUpsert;
+        }
+    }
+    
+    //Method to query Rule Entries
+    private list<WorkflowRule__c> pullAllWorkFlowRules(ID ruleSetID){
+        return  [Select Id, OwnerId, IsDeleted, Name, RecordTypeId, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, LastViewedDate, LastReferencedDate, Active__c, Description__c, DisplayActions__c, DisplayfilterLogic__c, Evaluation_Rule__c, Filter_Logic__c, FormattedFilterLogic__c, Object_Name__c, Order__c, Status__c, Version__c, Effective_Date__c, Expiration_Date__c, Advanced_Filter__c, Ruleset__c From WorkflowRule__c WHERE Ruleset__c =:rulesetRecord.id Order By Order__c];
+        
+    }
+    
 }

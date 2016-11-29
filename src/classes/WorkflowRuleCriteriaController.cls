@@ -4,15 +4,27 @@ public with sharing class WorkflowRuleCriteriaController {
     public List<WorkflowRuleCriteria>                       workflowCriteriaList        {get; set;}
    
     public Integer                                          counter                     {get; set;}
-
+    public WorkflowRule__c workflowRule {get;set;}
+    private Rule_set__c ruleset = new Rule_set__c();
     /*
     * @Description : Constructor taking standard controller as a parameter 
     */
     public WorkflowRuleCriteriaController(ApexPages.standardController controller) {
         this.stdController = controller;
-
+        list<String> fieldList= new list<String>{'Order__c','Ruleset__r.Object_Name__c','Evaluation_Rule__c','Active__c','Object_Name__c','Filter_Logic__c','Effective_Date__c','Advanced_Filter__c','Expiration_Date__c'};
+        stdController.addfields(fieldList);
+        workflowRule = (WorkflowRule__c)this.stdController.getRecord();
+        if(workflowRule.Ruleset__r.Object_Name__c != null){
+        workflowRule.Object_Name__c = workflowRule.Ruleset__r.Object_Name__c;
+        }else{
+            workflowRule.Object_Name__c = ApexPages.currentPage().getParameters().get('obj');
+        }
+        if(Apexpages.currentpage().getparameters().get('rulesetID')<>null){
+        ruleset = [SELECT Id,Active__c,Object_Name__c,Type__c From Rule_set__c where id=:Apexpages.currentpage().getparameters().get('rulesetID')];
+        }
+        system.debug('=======>'+workflowRule.Object_Name__c);
         // Set up workflow rule criteria 
-        setUpWorkflowRuleCriteria(this.stdController.getId());
+        setUpWorkflowRuleCriteria(workflowRule.id);
     }
 
     /*
@@ -42,11 +54,13 @@ public with sharing class WorkflowRuleCriteriaController {
         if (workflowRuleId != null){
             // Get all the scoring rule related to the scoring rule 
 
-            WorkflowRule__c workflowRule = [SELECT Id, Object_Name__c, (SELECT Id, Field_API_Name__c,Sequence__c, Field_Type__c, Operator__c, Parent_Object_Field__c, 
+            workflowRule = [SELECT Id,Name, Order__c,Object_Name__c,Ruleset__r.Object_Name__c,Evaluation_Rule__c,Active__c,Filter_Logic__c,Effective_Date__c,Advanced_Filter__c,Expiration_Date__c, (SELECT Id, Field_API_Name__c,Sequence__c, Field_Type__c, Operator__c, Parent_Object_Field__c, 
                                                         Parent_Object_Name__c, Value__c, Relationship_Name__c,Criteria_Object__c,Child_Relationship_Name__c 
                                                             FROM Workflow_Rule_Criterias__r) 
                                                         
                                                     FROM WorkflowRule__c WHERE Id=: workflowRuleId LIMIT 1];
+            
+            workflowRule.Object_Name__c =workflowRule.Ruleset__r.Object_Name__c; // added to set object from rule set
             
             // Get the object name schema
             List<SelectOption> objOptions = new List<SelectOption>();
@@ -100,7 +114,7 @@ public with sharing class WorkflowRuleCriteriaController {
     * @Return PageReference  null
     */
     public PageReference addCriteria(){
-        WorkflowRule__c workflowRule = (WorkflowRule__c)this.stdController.getRecord();
+        workflowRule = (WorkflowRule__c)this.stdController.getRecord();
         system.debug('workflowRule-->'+workflowRule.Object_Name__c);
         // Check if object name is not blank
         if (!String.isBlank(workflowRule.Object_Name__c)){
@@ -130,21 +144,21 @@ public with sharing class WorkflowRuleCriteriaController {
         }
         
         for(Integer i=0; i<workflowCriteriaList.size();i++){
-        	(workflowCriteriaList.get(i)).counter = i+1;
+            (workflowCriteriaList.get(i)).counter = i+1;
         }
         //WorkflowRuleCriteria__c dellist = new Sequence__c();
         //dellist.Sequence__c();
         /*Integer i=1; 
         for(WorkflowRuleCriteria dellist : workflowCriteriaList){
-			if(dellist.workflowRuleCriteria.Sequence__c!=null){			
-				dellist.workflowRuleCriteria.Sequence__c= i;
-				//dellist.counter=i;
-				i++;
-				}
-				
-				
+            if(dellist.workflowRuleCriteria.Sequence__c!=null){         
+                dellist.workflowRuleCriteria.Sequence__c= i;
+                //dellist.counter=i;
+                i++;
+                }
+                
+                
         //if(dellist.Sequence <= workflowCriteriaList.counter){
-			//	Sequence--;        
+            //  Sequence--;        
         
         //}
         }*/
@@ -156,13 +170,13 @@ public with sharing class WorkflowRuleCriteriaController {
         if (counter != null && counter > 0) {  
             
             if( !String.isBlank(this.workflowCriteriaList[counter-1].workflowRuleCriteria.Criteria_Object__c)){
-            	String obj = this.workflowCriteriaList[counter-1].workflowRuleCriteria.Criteria_Object__c.split('~')[0];
+                String obj = this.workflowCriteriaList[counter-1].workflowRuleCriteria.Criteria_Object__c.split('~')[0];
             
-            	Map<String, Map<String, Schema.sObjectField>> mapSchema = WorkflowRuleUtils.getSchemaMap(obj.toLowerCase());
-            	this.workflowCriteriaList[counter-1].objectFields=  WorkflowRuleUtils.getFields(mapSchema.get(obj.toLowerCase()));
+                Map<String, Map<String, Schema.sObjectField>> mapSchema = WorkflowRuleUtils.getSchemaMap(obj.toLowerCase());
+                this.workflowCriteriaList[counter-1].objectFields=  WorkflowRuleUtils.getFields(mapSchema.get(obj.toLowerCase()));
             }else{
-            	this.workflowCriteriaList[counter-1].clearValues();
-            	this.workflowCriteriaList[counter-1].objectFields = new List<SelectOption>();
+                this.workflowCriteriaList[counter-1].clearValues();
+                this.workflowCriteriaList[counter-1].objectFields = new List<SelectOption>();
             }
         }
     }
@@ -173,7 +187,8 @@ public with sharing class WorkflowRuleCriteriaController {
     * @Return PageReference  null
     */
     public PageReference saveWorkflowRule(){
-        WorkflowRule__c workflowRule = (WorkflowRule__c)this.stdController.getRecord();
+        workflowRule = (WorkflowRule__c)this.stdController.getRecord();
+        if(Apexpages.currentpage().getparameters().get('rulesetID') != null){workflowRule.Ruleset__c = Apexpages.currentpage().getparameters().get('rulesetID');}
         List<WorkflowRuleCriteria__c> workflowRuleCriteriaToUpsert  = new List<WorkflowRuleCriteria__c>();
         
         // Create arule
@@ -229,9 +244,9 @@ public with sharing class WorkflowRuleCriteriaController {
         public List<SelectOption>           objectFields                {get; set;} 
         public List<SelectOption>           parentObjectFields          {get; set;} 
         public Integer                      counter                     {get; set;}
-		
-		
-		public boolean iseditable{set;get;}
+        
+        
+        public boolean iseditable{set;get;}
         public boolean isbetween{set;get;}
         public boolean isPicklist{set;get;}
         public boolean isBoolean{set;get;}
@@ -241,8 +256,8 @@ public with sharing class WorkflowRuleCriteriaController {
         public List<SelectOption> operators {get;set;}
         
         //store the picklist values if any
-		public List<SelectOption> picklistvalues {get;set;}
-		
+        public List<SelectOption> picklistvalues {get;set;}
+        
         /*
         * Costructor 
         */
@@ -265,47 +280,47 @@ public with sharing class WorkflowRuleCriteriaController {
             // Check selected value is not null
             //if (!String.isBlank(this.selectedField)) setObjectValue(this.workflowRuleCriteria.Field_Type__c,this.workflowRuleCriteria.Value__c); 
             /*
-            	in edit mode ?
+                in edit mode ?
             */
             if(this.workflowRuleCriteria.id!=null){
-            	setDisplayValues();
+                setDisplayValues();
             }
         }
         
         
         private void setDisplayValues(){
-        	
-        	if (!String.isBlank(this.workflowRuleCriteria.Parent_Object_Field__c)){
-        		Map<String, Map<String, Schema.sObjectField>> mapSchema = WorkflowRuleUtils.getSchemaMap(this.workflowRuleCriteria.Parent_Object_Name__c);
-            	this.selectedField = this.workflowRuleCriteria.Parent_Object_Field__c;
-            	Schema.DescribeFieldResult fdesc = mapSchema.get(this.workflowRuleCriteria.Parent_Object_Name__c).get(this.selectedField).getDescribe();
-            	DisplayType fieldtype=fdesc.gettype();
-	            this.operators = WorkflowRuleUtils.populateOperators(fieldtype);
-	            
-	            if(fieldType==Schema.DisplayType.Boolean)
-	                this.isBoolean = true;
-	            
-	            //2. if display type is picklist ..populate the picklist values
-	            if(fieldType==Schema.DisplayType.MultiPicklist||fieldType==Schema.DisplayType.Picklist ){
-	            	this.isPicklist=true;  
-	            	this.picklistvalues = WorkflowRuleUtils.populatePicklistValues(Schema.getGlobalDescribe().get(this.workflowRuleCriteria.Parent_Object_Name__c.toLowerCase()),this.workflowRuleCriteria.Parent_Object_Field__c);                    	
-	            }
-        	}else{
-        		Map<String, Map<String, Schema.sObjectField>> mapSchema = WorkflowRuleUtils.getSchemaMap(this.workflowRuleCriteria.criteria_object__c.toLowerCase());
-            	//this.selectedField = this.workflowRuleCriteria.Field_API_Name__c;
-            	Schema.DescribeFieldResult fdesc = mapSchema.get(this.workflowRuleCriteria.criteria_object__c.toLowerCase()).get(this.selectedField).getDescribe();
-            	DisplayType fieldtype=fdesc.gettype();
-	            this.operators = WorkflowRuleUtils.populateOperators(fieldtype);
-	            
-	            if(fieldType==Schema.DisplayType.Boolean)
-	                this.isBoolean = true;
-	            
-	            //2. if display type is picklist ..populate the picklist values
-	            if(fieldType==Schema.DisplayType.MultiPicklist||fieldType==Schema.DisplayType.Picklist ){
-	            	this.isPicklist=true;  
-	            	this.picklistvalues = WorkflowRuleUtils.populatePicklistValues(Schema.getGlobalDescribe().get(this.objectName.toLowerCase()),this.workflowRuleCriteria.Field_API_Name__c);                    	
-	            }
-        	}
+            
+            if (!String.isBlank(this.workflowRuleCriteria.Parent_Object_Field__c)){
+                Map<String, Map<String, Schema.sObjectField>> mapSchema = WorkflowRuleUtils.getSchemaMap(this.workflowRuleCriteria.Parent_Object_Name__c);
+                this.selectedField = this.workflowRuleCriteria.Parent_Object_Field__c;
+                Schema.DescribeFieldResult fdesc = mapSchema.get(this.workflowRuleCriteria.Parent_Object_Name__c).get(this.selectedField).getDescribe();
+                DisplayType fieldtype=fdesc.gettype();
+                this.operators = WorkflowRuleUtils.populateOperators(fieldtype);
+                
+                if(fieldType==Schema.DisplayType.Boolean)
+                    this.isBoolean = true;
+                
+                //2. if display type is picklist ..populate the picklist values
+                if(fieldType==Schema.DisplayType.MultiPicklist||fieldType==Schema.DisplayType.Picklist ){
+                    this.isPicklist=true;  
+                    this.picklistvalues = WorkflowRuleUtils.populatePicklistValues(Schema.getGlobalDescribe().get(this.workflowRuleCriteria.Parent_Object_Name__c.toLowerCase()),this.workflowRuleCriteria.Parent_Object_Field__c);                     
+                }
+            }else{
+                Map<String, Map<String, Schema.sObjectField>> mapSchema = WorkflowRuleUtils.getSchemaMap(this.workflowRuleCriteria.criteria_object__c.toLowerCase());
+                //this.selectedField = this.workflowRuleCriteria.Field_API_Name__c;
+                Schema.DescribeFieldResult fdesc = mapSchema.get(this.workflowRuleCriteria.criteria_object__c.toLowerCase()).get(this.selectedField).getDescribe();
+                DisplayType fieldtype=fdesc.gettype();
+                this.operators = WorkflowRuleUtils.populateOperators(fieldtype);
+                
+                if(fieldType==Schema.DisplayType.Boolean)
+                    this.isBoolean = true;
+                
+                //2. if display type is picklist ..populate the picklist values
+                if(fieldType==Schema.DisplayType.MultiPicklist||fieldType==Schema.DisplayType.Picklist ){
+                    this.isPicklist=true;  
+                    this.picklistvalues = WorkflowRuleUtils.populatePicklistValues(Schema.getGlobalDescribe().get(this.objectName.toLowerCase()),this.workflowRuleCriteria.Field_API_Name__c);                      
+                }
+            }
         }
         
         /*
@@ -338,10 +353,10 @@ public with sharing class WorkflowRuleCriteriaController {
         * @Return void
         */
         public void isReference(){
-        	
-        	if(String.isBlank(this.workflowRuleCriteria.criteria_object__c) || String.isBlank(this.workflowRuleCriteria.Field_API_Name__c)){
-            	//reset the values:-
-            	clearValues();
+            
+            if(String.isBlank(this.workflowRuleCriteria.criteria_object__c) || String.isBlank(this.workflowRuleCriteria.Field_API_Name__c)){
+                //reset the values:-
+                clearValues();
             }           
             
             if (!String.isBlank(this.workflowRuleCriteria.criteria_object__c) && !String.isBlank(this.workflowRuleCriteria.Field_API_Name__c)){
@@ -376,8 +391,8 @@ public with sharing class WorkflowRuleCriteriaController {
                     
                     //2. if display type is picklist ..populate the picklist values
                     if(fieldType==Schema.DisplayType.MultiPicklist||fieldType==Schema.DisplayType.Picklist ){
-                    	this.isPicklist=true;  
-                    	this.picklistvalues = WorkflowRuleUtils.populatePicklistValues(Schema.getGlobalDescribe().get(this.objectName.toLowerCase()),this.workflowRuleCriteria.Field_API_Name__c);                    	
+                        this.isPicklist=true;  
+                        this.picklistvalues = WorkflowRuleUtils.populatePicklistValues(Schema.getGlobalDescribe().get(this.objectName.toLowerCase()),this.workflowRuleCriteria.Field_API_Name__c);                      
                     }
                      
                     
@@ -424,7 +439,7 @@ public with sharing class WorkflowRuleCriteriaController {
             this.workflowRuleCriteria.Field_Name__c = fdesc.getLabel();
             //this.workflowRuleCriteria.Field_Type__c = String.valueOf(mapSchema.get(this.workflowRuleCriteria.Parent_Object_Name__c).get(this.selectedField).getDescribe().getSOAPType()).toLowerCase();
         
-        	//we need the display type also:
+            //we need the display type also:
             //1. populate operator based on display type
             DisplayType fieldtype=fdesc.gettype();
             this.operators = WorkflowRuleUtils.populateOperators(fieldtype);
@@ -434,13 +449,13 @@ public with sharing class WorkflowRuleCriteriaController {
             
             //2. if display type is picklist ..populate the picklist values
             if(fieldType==Schema.DisplayType.MultiPicklist||fieldType==Schema.DisplayType.Picklist ){
-            	this.isPicklist=true;  
-            	this.picklistvalues = WorkflowRuleUtils.populatePicklistValues(Schema.getGlobalDescribe().get(this.workflowRuleCriteria.Parent_Object_Name__c.toLowerCase()),this.workflowRuleCriteria.Parent_Object_Field__c);                    	
+                this.isPicklist=true;  
+                this.picklistvalues = WorkflowRuleUtils.populatePicklistValues(Schema.getGlobalDescribe().get(this.workflowRuleCriteria.Parent_Object_Name__c.toLowerCase()),this.workflowRuleCriteria.Parent_Object_Field__c);                     
             }
         }
         
         public void clearValues(){
-        	this.isbetween=false;
+            this.isbetween=false;
             this.isBoolean=false;
             this.isPicklist=false;
             this.ismultiselect=false;

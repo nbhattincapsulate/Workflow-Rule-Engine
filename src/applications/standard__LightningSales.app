@@ -20,4 +20,5 @@
     <tab>standard-News</tab>
     <tab>standard-ForecastingLightning</tab>
     <tab>WorkflowRule__c</tab>
+    <tab>Rule_set__c</tab>
 </CustomApplication>

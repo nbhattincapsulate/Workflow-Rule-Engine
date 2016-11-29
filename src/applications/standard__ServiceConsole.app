@@ -175,7 +175,11 @@
     <tab>standard-Knowledge</tab>
     <tab>standard-LiveAgent</tab>
     <tab>WorkflowRule__c</tab>
+    <tab>Rule_set__c</tab>
     <workspaceMappings>
+        <mapping>
+            <tab>Rule_set__c</tab>
+        </mapping>
         <mapping>
             <tab>WorkflowRule__c</tab>
         </mapping>

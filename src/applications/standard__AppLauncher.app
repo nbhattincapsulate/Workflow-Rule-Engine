@@ -3,4 +3,5 @@
     <defaultLandingTab>standard-AppLauncher</defaultLandingTab>
     <tab>standard-AppLauncher</tab>
     <tab>WorkflowRule__c</tab>
+    <tab>Rule_set__c</tab>
 </CustomApplication>

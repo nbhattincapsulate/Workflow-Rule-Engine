@@ -1,25 +1,25 @@
-<apex:page controller="multi_pick_list" >
+<apex:page controller="WorkflowobjectEnableController">
 <style>
         .mylist{
-            width:100px;
-            height:80px;
+            width:150px;
+            height:200px;
         }
     </style>
     <apex:form >
         <apex:pageBlock title="Multi Picklist" >
-            <apex:panelGrid columns="3" id="one">
+            <apex:panelGrid columns="3" id="thepanel">
                 <apex:selectList multiselect="true" value="{!selected}" styleclass="mylist">
              
-                    <apex:selectOptions value="{!nsoptions}" />
+                    <apex:selectOptions value="{!notselectedoptions}" />
        
                 </apex:selectList>
-                <apex:panelGrid columns="1"> 
-                    <apex:commandButton value=">>" action="{!addElements}" reRender="one" /> 
+                <apex:panelGrid columns="1">
+                    <apex:commandButton value=">>" action="{!addElements}" reRender="thepanel" /> 
                     <br/>
-                    <apex:commandButton value="<<" action="{!removeElements}" reRender="one" />
+                    <apex:commandButton value="<<" action="{!removeElements}" reRender="thepanel" />
                 </apex:panelGrid>
                 <apex:selectList multiselect="true" value="{!removed}" styleclass="mylist">
-                    <apex:selectOptions value="{!soptions}" /> 
+                    <apex:selectOptions value="{!selectedOptions}" />
                 </apex:selectList>   
             </apex:panelGrid>
         </apex:pageBlock>

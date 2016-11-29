@@ -1,52 +1,65 @@
-<apex:page id="thepage" controller="RuleEditController">
+<apex:page id="thepage" standardController="Rule_set__c" extensions="RuleEditController">
     <apex:form id="theform">
         <apex:pageBlock id="ruleSetBlock" title="{!rulesetRecord.name}">
             <apex:pageBlockButtons id="rulesetBlockButton">
-                <apex:commandButton value="Save" action="{!}"/>
-                <apex:commandButton value="Delete" action="{!}"/>
-                <apex:commandButton value="Cancel" action="{!}"/>
+                <apex:commandButton value="Save" action="{!onSave}"/>
+                <apex:commandButton value="Delete" action="{!delete}"/>
+                <apex:commandButton value="Cancel" action="{!cancel}"/>
             </apex:pageBlockButtons>
             <apex:pageBlockSection >
-                <apex:pageBlockSectionItem >
-                    <apex:outputLabel value="Name" for="rulesetName"/>
-                    <apex:inputfield value="{!rulesetRecord.name}" id="rulesetName"/>
-                </apex:pageBlockSectionItem>
-                <apex:pageBlockSectionItem >
-                    <apex:outputLabel value="Active" for="rulesetActive"/>
+                
+                    
+                    <apex:inputfield value="{!rulesetRecord.name}" id="rulesetName" />
+                
+                
+                    
                     <apex:inputfield value="{!rulesetRecord.Active__c}" id="rulesetActive"/>
-                </apex:pageBlockSectionItem>
-                <apex:pageBlockSectionItem >
-                    <apex:outputLabel value="Created By" for="rulesetCreatedBy"/>
+                
+                    
+                    <apex:inputfield value="{!rulesetRecord.Type__c}" id="rulesetType" rendered="{!NOT(isEdit)}" />
+                    <apex:outputfield value="{!rulesetRecord.Type__c}"  rendered="{!(isEdit)}"/>
+                
+                
+                    <apex:inputfield value="{!rulesetRecord.Object_Name__c}" id="rulesetObject" rendered="{!NOT(isEdit)}"/>
+                    <apex:outputfield value="{!rulesetRecord.Object_Name__c}"  rendered="{!(isEdit)}"/>
+                
+                
                     <apex:outputfield value="{!rulesetRecord.CreatedByID}" id="rulesetCreatedBy"/>
-                </apex:pageBlockSectionItem>
-                <apex:pageBlockSectionItem >
-                    <apex:outputLabel value="Modified By" for="rulesetModifiedBy"/>
+                
                     <apex:outputfield value="{!rulesetRecord.CreatedByID}" id="rulesetModifiedBy"/>
-                </apex:pageBlockSectionItem>
+                
             </apex:pageBlockSection>
         </apex:pageBlock>
-        <apex:pageBlock id="ruleBlock" title="Rule Entries">
+        <apex:pageBlock id="ruleBlock" title="Rule Entries" rendered="{!isEdit}">
             <apex:pageBlockButtons id="ruleBlockButton">
-                <apex:commandButton value="Save" action="{!}"/>
-                <apex:commandButton value="New Rule" action="{!}"/>
+                <apex:commandButton value="Save" action="{!saveAllEntries}"/>
+                <apex:commandButton value="New Rule" action="{!gotoNewRule}"/>
             </apex:pageBlockButtons>
             <apex:pageBlockTable value="{!workFlowRuleEntrieInnerList}" var="ruleEntries">
                 <apex:column >
-                    
+                    <apex:commandlink value="Edit" action="{!ruleEntryEdit}">
+                        <apex:param name="selectedruleEntryID" value="{!ruleEntries.ruleEntry.id}" assignTo="{!selectedruleEntryID}"/>
+                    </apex:commandlink>
+                    <!--<apex:commandButton value="Delete" action="{!}">
+                        <apex:param name="selectedruleEntryID" value="{!ruleEntries.ruleEntry.id}" assignTo="{!selectedruleEntryID}"/>
+                    </apex:commandButton>
+                    <apex:commandButton value="Clone" action="{!}">
+                        <apex:param name="selectedruleEntryID" value="{!ruleEntries.ruleEntry.id}" assignTo="{!selectedruleEntryID}"/>
+                    </apex:commandButton>-->
                 </apex:column>
-                <apex:column >
+                <apex:column headerValue="{!$ObjectType.WorkflowRule__c.fields.Active__c.Label}">
                     <apex:inputField value="{!ruleEntries.ruleEntry.Active__c}"/>
                 </apex:column>
-                <apex:column >
+                <apex:column headerValue="{!$ObjectType.WorkflowRule__c.fields.Order__c.Label}">
                     <apex:inputField value="{!ruleEntries.ruleEntry.Order__c}"/>
                 </apex:column>
-                <apex:column >
-                    <apex:inputField value="{!ruleEntries.ruleEntry.Name}"/>
+                <apex:column headerValue="{!$ObjectType.WorkflowRule__c.fields.Name.Label}">
+                    <apex:outputField value="{!ruleEntries.ruleEntry.Name}"/>
                 </apex:column>
-                <apex:column >
+                <apex:column headerValue="Conditions">
                     <apex:outputText value="{!ruleEntries.entryCriteria}"/>
                 </apex:column>
-                <apex:column >
+                <apex:column headerValue="Actions">
                     <apex:outputText value="{!ruleEntries.actions}"/>
                 </apex:column>
             </apex:pageBlockTable>

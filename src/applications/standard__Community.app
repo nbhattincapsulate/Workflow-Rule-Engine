@@ -9,4 +9,5 @@
     <tab>standard-report</tab>
     <tab>standard-Dashboard</tab>
     <tab>WorkflowRule__c</tab>
+    <tab>Rule_set__c</tab>
 </CustomApplication>

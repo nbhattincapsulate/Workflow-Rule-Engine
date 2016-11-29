@@ -134,7 +134,7 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>multi_pick_list</apexClass>
+        <apexClass>WorkflowobjectEnableController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <custom>false</custom>
@@ -2035,6 +2035,10 @@
         <recordType>WorkflowRule__c.Generic</recordType>
         <visible>false</visible>
     </recordTypeVisibilities>
+    <tabVisibilities>
+        <tab>Rule_set__c</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
     <tabVisibilities>
         <tab>WorkflowRule__c</tab>
         <visibility>DefaultOn</visibility>

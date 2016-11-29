@@ -43,4 +43,8 @@
         </picklistValues>
     </fields>
     <startsWith>Consonant</startsWith>
+    <webLinks>
+        <label><!-- Edit --></label>
+        <name>Edit</name>
+    </webLinks>
 </CustomObjectTranslation>
