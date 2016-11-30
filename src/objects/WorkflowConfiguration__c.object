@@ -3,6 +3,17 @@
     <customSettingsType>List</customSettingsType>
     <enableFeeds>false</enableFeeds>
     <fields>
+        <fullName>Base_Url__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>e.g. https://incapsulate-rf-dev-ed.my.salesforce.com</inlineHelpText>
+        <label>Base Url</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>ContextUser__c</fullName>
         <externalId>false</externalId>
         <label>Context User</label>

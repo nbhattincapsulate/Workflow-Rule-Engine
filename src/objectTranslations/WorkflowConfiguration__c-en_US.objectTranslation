@@ -9,6 +9,11 @@
         <value>Workflow Configuration</value>
     </caseValues>
     <fields>
+        <help><!-- e.g. https://incapsulate-rf-dev-ed.my.salesforce.com --></help>
+        <label><!-- Base Url --></label>
+        <name>Base_Url__c</name>
+    </fields>
+    <fields>
         <label><!-- Context User --></label>
         <name>ContextUser__c</name>
     </fields>

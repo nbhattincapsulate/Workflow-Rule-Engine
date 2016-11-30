@@ -176,7 +176,11 @@
     <tab>standard-LiveAgent</tab>
     <tab>WorkflowRule__c</tab>
     <tab>Rule_set__c</tab>
+    <tab>Rule_Admin</tab>
     <workspaceMappings>
+        <mapping>
+            <tab>Rule_Admin</tab>
+        </mapping>
         <mapping>
             <tab>Rule_set__c</tab>
         </mapping>

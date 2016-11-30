@@ -6,4 +6,5 @@
     <tab>standard-Chatter</tab>
     <tab>WorkflowRule__c</tab>
     <tab>Rule_set__c</tab>
+    <tab>Rule_Admin</tab>
 </CustomApplication>

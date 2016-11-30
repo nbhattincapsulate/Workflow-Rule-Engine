@@ -2,11 +2,11 @@
 <CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
     <caseValues>
         <plural>false</plural>
-        <value>Rule set</value>
+        <value>Rule Set</value>
     </caseValues>
     <caseValues>
         <plural>true</plural>
-        <value>Rule sets</value>
+        <value>Rule Sets</value>
     </caseValues>
     <fields>
         <help><!-- Enable Workflow Rule --></help>

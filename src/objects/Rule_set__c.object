@@ -115,7 +115,7 @@
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
-    <label>Rule set</label>
+    <label>Rule Set</label>
     <listViews>
         <fullName>All</fullName>
         <filterScope>Everything</filterScope>
@@ -126,7 +126,7 @@
         <trackHistory>false</trackHistory>
         <type>Text</type>
     </nameField>
-    <pluralLabel>Rule sets</pluralLabel>
+    <pluralLabel>Rule Sets</pluralLabel>
     <searchLayouts/>
     <sharingModel>ReadWrite</sharingModel>
     <webLinks>

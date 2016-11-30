@@ -32,13 +32,13 @@ public with sharing class WorkflowTriggerUtility {
     //@return :
     public static String createCreateTriggerBody(String sObjectName){
         
-        
+        String customsObjectName = sObjectName.contains('__c')?sObjectName.removeEndIgnoreCase('__c'):sObjectName;
         JSONGenerator gen = JSON.createGenerator(true);
         
         gen.writeStartObject();
-        gen.writeStringField('Name', 'IncapRule'+sObjectName+'Trigger');
+        gen.writeStringField('Name', 'IncapRule'+customsObjectName+'Trigger');
         gen.writeStringField('TableEnumOrId', sObjectName);
-        String bodyString = 'trigger IncapRule'+sObjectName+'Trigger on '+sObjectName+'(after insert,after update){';
+        String bodyString = 'trigger IncapRule'+customsObjectName+'Trigger on '+sObjectName+'(after insert,after update){';
         bodyString += 'Set<Id> Ids=new Set<Id>(); String sobjName=\''+sObjectName+'\';';
         bodyString += 'for ('+sObjectName+' record:trigger.new){ Ids.add(record.Id); }';
         bodyString += 'Boolean evaluate = WorkflowRuleEvaluation.EvaluationIsRunning;';
@@ -51,11 +51,25 @@ public with sharing class WorkflowTriggerUtility {
         
     }
     
+    //Method to deactivate trigger
+    public static HttpResponse  deleteTrigger(String sObjectName ,Id triggerID){
+        WorkflowConfiguration__c configuration = WorkflowConfiguration__c.getValues('Settings');
+        String endPointURL = configuration.Base_Url__c + '/services/data/v38.0/sobjects/ApexTrigger/'+triggerID;
+        map<String,String> headerMap = new map<String,String>();
+        headerMap.put('Content-Type', 'application/json');
+        headerMap.put('Authorization', 'OAuth ' + UserInfo.getSessionId());
+        String requestBody = createCreateTriggerBody(sObjectName);
+        return sendRequesttoServer(prepareHttprequest(endPointURL,'POST',headerMap,requestBody));
+    }
+    
+    
+    
     //Method to send request for Trigger Creation
     //@param:
     //@return:
-    public static HttpResponse sendRequestforTriggerCreation(String sObjectName){ 
-        String endPointURL = URL.getSalesforceBaseUrl().toExternalForm() + '/services/data/v27.0/sobjects/ApexTrigger';
+    public static HttpResponse sendRequestforTriggerCreation(String sObjectName){
+        WorkflowConfiguration__c configuration = WorkflowConfiguration__c.getValues('Settings');
+        String endPointURL = configuration.Base_Url__c + '/services/data/v38.0/sobjects/ApexTrigger';
         map<String,String> headerMap = new map<String,String>();
         headerMap.put('Content-Type', 'application/json');
         headerMap.put('Authorization', 'OAuth ' + UserInfo.getSessionId());

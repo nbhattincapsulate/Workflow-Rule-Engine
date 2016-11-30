@@ -220,7 +220,6 @@ During save the FormatedFilterLogic is calculated based on the value captured on
         <externalId>false</externalId>
         <label>Rule set</label>
         <referenceTo>Rule_set__c</referenceTo>
-        <relationshipLabel>Workflow Rules</relationshipLabel>
         <relationshipName>Workflow_Rules</relationshipName>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -276,7 +275,7 @@ During save the FormatedFilterLogic is calculated based on the value captured on
         <type>Number</type>
         <unique>false</unique>
     </fields>
-    <label>Workflow Rule</label>
+    <label>Rule Entry</label>
     <listViews>
         <fullName>Activity_Creation_Rules</fullName>
         <columns>Task_SubCat__c</columns>
@@ -331,7 +330,7 @@ During save the FormatedFilterLogic is calculated based on the value captured on
         <trackHistory>true</trackHistory>
         <type>Text</type>
     </nameField>
-    <pluralLabel>Workflow Rules</pluralLabel>
+    <pluralLabel>Rule Entries</pluralLabel>
     <recordTypeTrackHistory>false</recordTypeTrackHistory>
     <recordTypes>
         <fullName>Generic</fullName>

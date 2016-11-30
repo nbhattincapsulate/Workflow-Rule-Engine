@@ -9,7 +9,7 @@ public class multi_pick_list {
     public String gd {get;set;}
     map<string,string> objectapilabelmap = new map<string,string>();
     
-    public multi_pick_list(){
+    public multi_pick_list(){ 
         nsoptions = new List<SelectOption>();
         soptions = new List<SelectOption>();
         nscities = new set <string>();
