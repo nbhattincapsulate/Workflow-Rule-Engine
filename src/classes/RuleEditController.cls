@@ -9,6 +9,15 @@ public with sharing class RuleEditController {
         
     }
     
+    public List<SelectOption> getOrgObjects(){
+        List<SelectOption> options = new List<SelectOption>();
+		for(ApexTrigger existingTrigger : [SELECT ID,Name,TableEnumOrId from ApexTrigger where Name LIKE 'IncapRule%' And Status = 'Active']){
+			options.add(new SelectOption(existingTrigger.TableEnumOrId,Schema.getGlobalDescribe().get(existingTrigger.TableEnumOrId).getDescribe().getLabel()));
+		}
+        
+        return WorkflowRuleUtils.selectOptionSortByLabel(options);
+    }
+    
     public RuleEditController(ApexPages.StandardController controller) {
         if(Apexpages.currentpage().getparameters().get('id') != null){
             isEdit = true;

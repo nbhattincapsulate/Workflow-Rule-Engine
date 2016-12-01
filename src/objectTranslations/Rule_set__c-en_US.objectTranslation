@@ -42,6 +42,13 @@
             <translation><!-- Validation --></translation>
         </picklistValues>
     </fields>
+    <layouts>
+        <layout>Rule set Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
     <startsWith>Consonant</startsWith>
     <webLinks>
         <label><!-- Edit --></label>

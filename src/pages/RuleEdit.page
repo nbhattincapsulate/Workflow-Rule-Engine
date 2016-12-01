@@ -20,9 +20,12 @@
                     <apex:outputfield value="{!rulesetRecord.Type__c}"  rendered="{!(isEdit)}"/>
                 
                 
-                    <apex:inputfield value="{!rulesetRecord.Object_Name__c}" id="rulesetObject" rendered="{!NOT(isEdit)}"/>
+                    <!--<apex:inputfield value="{!rulesetRecord.Object_Name__c}" id="rulesetObject" rendered="{!NOT(isEdit)}"/> -->
                     <apex:outputfield value="{!rulesetRecord.Object_Name__c}"  rendered="{!(isEdit)}"/>
-                
+                	<apex:selectList style="width:12em;" value="{!rulesetRecord.Object_Name__c}" multiselect="false" size="1" rendered="{!NOT(isEdit)}">
+                    <apex:selectOption itemValue="" itemLabel="--None--" />
+                    	<apex:selectOptions value="{!OrgObjects}" />
+                    </apex:selectList>
                 
                     <apex:outputfield value="{!rulesetRecord.CreatedByID}" id="rulesetCreatedBy"/>
                 

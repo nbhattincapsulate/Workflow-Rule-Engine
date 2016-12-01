@@ -51,15 +51,28 @@ public with sharing class WorkflowTriggerUtility {
         
     }
     
+    //Method to prepare deacitvate trigger logic body
+    //@param:
+    //@return:
+    public static String createdeactivateTriggerBody(String triggerName){
+    	JSONGenerator gen = JSON.createGenerator(true);
+        gen.writeStartObject();
+        gen.writeStringField('Name', triggerName);
+        gen.writeStringField('Status', 'Inactive');
+        gen.writeEndObject();
+        return gen.getAsString(); 
+        
+    }
+    
     //Method to deactivate trigger
-    public static HttpResponse  deleteTrigger(String sObjectName ,Id triggerID){
+    public static HttpResponse  deleteTrigger(String sObjectName ,Id triggerID,String triggerName){
         WorkflowConfiguration__c configuration = WorkflowConfiguration__c.getValues('Settings');
         String endPointURL = configuration.Base_Url__c + '/services/data/v38.0/sobjects/ApexTrigger/'+triggerID;
         map<String,String> headerMap = new map<String,String>();
         headerMap.put('Content-Type', 'application/json');
         headerMap.put('Authorization', 'OAuth ' + UserInfo.getSessionId());
-        String requestBody = createCreateTriggerBody(sObjectName);
-        return sendRequesttoServer(prepareHttprequest(endPointURL,'POST',headerMap,requestBody));
+        String requestBody = createdeactivateTriggerBody(triggerName);
+        return sendRequesttoServer(prepareHttprequest(endPointURL,'DELETE',headerMap,requestBody)); 
     }
     
     
