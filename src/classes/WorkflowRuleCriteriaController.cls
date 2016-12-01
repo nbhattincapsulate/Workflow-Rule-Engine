@@ -12,7 +12,9 @@ public with sharing class WorkflowRuleCriteriaController {
     public WorkflowRuleCriteriaController(ApexPages.standardController controller) {
         this.stdController = controller;
         list<String> fieldList= new list<String>{'Order__c','Ruleset__r.Object_Name__c','Evaluation_Rule__c','Active__c','Object_Name__c','Filter_Logic__c','Effective_Date__c','Advanced_Filter__c','Expiration_Date__c'};
-        stdController.addfields(fieldList);
+           if(!Test.isRunningTest()){
+            stdController.addfields(fieldList);
+        }
         workflowRule = (WorkflowRule__c)this.stdController.getRecord();
         if(workflowRule.Ruleset__r.Object_Name__c != null){
         workflowRule.Object_Name__c = workflowRule.Ruleset__r.Object_Name__c;
@@ -181,22 +183,31 @@ public with sharing class WorkflowRuleCriteriaController {
         }
     }
 
-
+ 
     /*
     * @Description : Method used to save the scoring rule and its criteria 
     * @Return PageReference  null
     */
     public PageReference saveWorkflowRule(){
         workflowRule = (WorkflowRule__c)this.stdController.getRecord();
-        if(Apexpages.currentpage().getparameters().get('rulesetID') != null){workflowRule.Ruleset__c = Apexpages.currentpage().getparameters().get('rulesetID');}
+        
+            if(Apexpages.currentpage().getparameters().get('rulesetID') != null){
+                if (Schema.sObjectType.WorkflowRule__c.fields.Ruleset__c.isUpdateable() && Schema.sObjectType.WorkflowRule__c.fields.Ruleset__c.isCreateable() ){
+                workflowRule.Ruleset__c = Apexpages.currentpage().getparameters().get('rulesetID');
+                }
+                
+                } 
+                        
+            
         List<WorkflowRuleCriteria__c> workflowRuleCriteriaToUpsert  = new List<WorkflowRuleCriteria__c>();
         
         // Create arule
         try{
             // Create a  rule  
+            
             upsert workflowRule;
           
-            // Insert the new  criteria rules 
+            // Insert the new  criteria rules   
             for (WorkflowRuleCriteria criteria : this.workflowCriteriaList){
                 
                 if(criteria.workflowRuleCriteria.Id==null) criteria.workflowRuleCriteria.Workflow_Rule__c = workflowRule.Id;
@@ -215,9 +226,10 @@ public with sharing class WorkflowRuleCriteriaController {
             if (!workflowRuleCriteriaToUpsert.isEmpty()) upsert workflowRuleCriteriaToUpsert;
             
             Map<Id,WorkflowRuleCriteria__c> criteriaPresent = new Map<Id,WorkflowRuleCriteria__c>(workflowRuleCriteriaToUpsert);
-            
+            if (Schema.sObjectType.WorkflowRuleCriteria__c.isDeletable()) {
+
             delete [Select Id FROM WorkflowRuleCriteria__c WHERE Id NOT IN:criteriaPresent.keySet() AND Workflow_Rule__c=: workflowRule.Id];
-         
+            }
 
             // Return to the scoring rule detail page 
             return new ApexPages.standardController(workflowRule).view();
