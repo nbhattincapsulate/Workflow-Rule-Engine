@@ -25,7 +25,9 @@ public with sharing class RuleEditController {
             isEdit = false;
         }
         list<string> fieldList = new list<string>{'Name','Active__c','Type__c','Object_Name__c','CreatedById'};
-        controller.addfields(fieldList);
+        if(!Test.isRunningTest()){
+        	controller.addfields(fieldList);
+        }
         rulesetRecord = (Rule_set__c)controller.getRecord();
         stdController = controller;
         workFlowRuleEntrieInnerList = new list<workFlowRuleInner>();

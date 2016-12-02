@@ -89,7 +89,7 @@ public with sharing class WorkflowTriggerUtility {
         String requestBody = createCreateTriggerBody(sObjectName);
         return sendRequesttoServer(prepareHttprequest(endPointURL,'POST',headerMap,requestBody));
     }
-    
+    /*
     //Method to get query all the fields for any sObject
     //@param: objectapiname
     //@return: set of field api name
@@ -115,5 +115,5 @@ public with sharing class WorkflowTriggerUtility {
         //system.debug('====>'+soqlquery);
         return soqlquery;
     }
-         
+     */    
 }

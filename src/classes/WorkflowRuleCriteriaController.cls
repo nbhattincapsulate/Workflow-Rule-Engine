@@ -47,7 +47,7 @@ public with sharing class WorkflowRuleCriteriaController {
     *  @Description : Method used to set up workflow rule criteria 
     *  @Return void
     */
-    private void setUpWorkflowRuleCriteria(Id workflowRuleId){
+    public void setUpWorkflowRuleCriteria(Id workflowRuleId){
         this.workflowCriteriaList = new List<WorkflowRuleCriteria>();
        
         Map<String, Map<String, Schema.sObjectField>> mapSchema = new Map<String, Map<String, Schema.sObjectField>>();
@@ -116,7 +116,7 @@ public with sharing class WorkflowRuleCriteriaController {
     * @Return PageReference  null
     */
     public PageReference addCriteria(){
-        workflowRule = (WorkflowRule__c)this.stdController.getRecord();
+        //workflowRule = (WorkflowRule__c)this.stdController.getRecord();
         system.debug('workflowRule-->'+workflowRule.Object_Name__c);
         // Check if object name is not blank
         if (!String.isBlank(workflowRule.Object_Name__c)){
@@ -189,7 +189,7 @@ public with sharing class WorkflowRuleCriteriaController {
     * @Return PageReference  null
     */
     public PageReference saveWorkflowRule(){
-        workflowRule = (WorkflowRule__c)this.stdController.getRecord();
+        //workflowRule = (WorkflowRule__c)this.stdController.getRecord();
         
             if(Apexpages.currentpage().getparameters().get('rulesetID') != null){
                 if (Schema.sObjectType.WorkflowRule__c.fields.Ruleset__c.isUpdateable() && Schema.sObjectType.WorkflowRule__c.fields.Ruleset__c.isCreateable() ){

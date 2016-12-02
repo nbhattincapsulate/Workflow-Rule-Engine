@@ -27,10 +27,11 @@ private class WorkflowRuleCriteriaControllerTest {
     * Method used to test the constructor
     */ 
     static testMethod void test_Constructor(){
-        Test.startTest();
+        Test.startTest();  
         System.Test.setCurrentPage(new PageReference('/apex/x'));
         ApexPages.StandardController ctrl = new ApexPages.standardController(new WorkflowRule__c(Name='Test scoring rule',Object_Name__c='account',Active__c=true,Filter_Logic__c='AND'));
         WorkflowRuleCriteriaController cls = new WorkflowRuleCriteriaController(ctrl);
+        cls.addCriteria();
         System.assertEquals(0,cls.workflowCriteriaList.size());
         Test.stopTest();
     }
@@ -41,10 +42,11 @@ private class WorkflowRuleCriteriaControllerTest {
     */ 
     static testMethod void test_OrgObjects(){
         Test.startTest();
-        System.Test.setCurrentPage(new PageReference('/apex/x'));
+        //System.Test.setCurrentPage(new PageReference('/apex/x'));
         ApexPages.StandardController ctrl = new ApexPages.standardController(new WorkflowRule__c(Name='Test scoring rule',Object_Name__c='account',Active__c=true,Filter_Logic__c='AND'));
         WorkflowRuleCriteriaController cls = new WorkflowRuleCriteriaController(ctrl);
-        System.assertNotEquals(0,cls.getOrgObjects().size());
+        cls.addCriteria();
+		System.assertNotEquals(0,cls.getOrgObjects().size());
         Test.stopTest();
     }
 
@@ -54,10 +56,25 @@ private class WorkflowRuleCriteriaControllerTest {
     static testMethod void test_showCriteria(){ 
         Test.startTest();
         System.Test.setCurrentPage(new PageReference('/apex/x'));
-        WorkflowRuleCriteriaController cls = new WorkflowRuleCriteriaController(new ApexPages.standardController(new WorkflowRule__c(Name='Test scoring rule',Object_Name__c='account',Active__c=true,Filter_Logic__c='AND')));
-        cls.showCriteria();
-        System.assertEquals(0,cls.workflowCriteriaList.size());
-        //System.assertNotEquals(0,cls.workflowCriteriaList.size());
+        ApexPages.StandardController ctrl = new ApexPages.standardController(new WorkflowRule__c(Name='Test scoring rule',Object_Name__c='account',Active__c=true,Filter_Logic__c='AND'));
+        WorkflowRuleCriteriaController cls = new WorkflowRuleCriteriaController(ctrl);
+		System.assertEquals(0,cls.workflowCriteriaList.size());
+        Test.stopTest();
+    }
+    
+    /*
+    * Method used to test the show ObjectFields method
+    */ 
+    static testMethod void test_showObjectFields(){ 
+        Test.startTest();
+        Rule_set__c ruleset = new Rule_set__c(Name='Rule Name',Object_Name__c='account',Active__c=true);
+        insert ruleset;
+        WorkflowRule__c workflowrule = new WorkflowRule__c(Name='Test scoring rule',Object_Name__c='account',Active__c=true,Filter_Logic__c='AND',Ruleset__c= ruleset.id);
+        insert workflowrule;  
+        System.Test.setCurrentPage(new PageReference('/apex/x'));
+        WorkflowRuleCriteriaController sof = new WorkflowRuleCriteriaController(new ApexPages.standardController(new WorkflowRule__c(Name='Test scoring rule',Object_Name__c='account',Active__c=true,Filter_Logic__c='AND',Ruleset__c= ruleset.id)));
+		
+        System.assertEquals(0,sof.workflowCriteriaList.size());
         Test.stopTest();
     }
 
@@ -75,15 +92,6 @@ private class WorkflowRuleCriteriaControllerTest {
         WorkflowRuleCriteriaController cls = new WorkflowRuleCriteriaController(new ApexPages.standardController(new WorkflowRule__c(Name='Test scoring rule',Object_Name__c='account',Active__c=true,Filter_Logic__c='AND')));
         cls.showCriteria();
         System.assertEquals(0,cls.workflowCriteriaList.size());
-       // System.assertNotEquals(0,cls.workflowCriteriaList.size());
-
-        cls.addCriteria();
-        System.assertEquals(0,cls.workflowCriteriaList.size());
-        //System.assertNotEquals(0,cls.workflowCriteriaList.size());
-        cls.addCriteria(); 
-
-        System.assertEquals(0,cls.workflowCriteriaList.size());
-       // System.assertNotEquals(0,cls.workflowCriteriaList.size());
         Test.stopTest();
     }
 
@@ -92,63 +100,68 @@ private class WorkflowRuleCriteriaControllerTest {
     */ 
     static testMethod void test_deleteCriteria(){
         Test.startTest();
+        Rule_set__c ruleset = new Rule_set__c(Name='Rule Name',Object_Name__c='account',Active__c=true);
+        insert ruleset;
+        WorkflowRule__c workflowrule = new WorkflowRule__c(Name='Test scoring rule',Object_Name__c='account',Active__c=true,Filter_Logic__c='AND',Ruleset__c= ruleset.id);
+        insert workflowrule; 
         System.Test.setCurrentPage(new PageReference('/apex/x'));
-        WorkflowRuleCriteriaController cls = new WorkflowRuleCriteriaController(new ApexPages.standardController(new WorkflowRule__c(Name='Test scoring rule',Object_Name__c='account',Active__c=true,Filter_Logic__c='AND')));
+        WorkflowRuleCriteriaController cls = new WorkflowRuleCriteriaController(new ApexPages.standardController(new WorkflowRule__c(Name='Test scoring rule',Object_Name__c='account',Active__c=true,Filter_Logic__c='AND',Ruleset__c= ruleset.id)));
         cls.showCriteria();
-        System.assertEquals(0,cls.workflowCriteriaList.size());
-        //System.assertNotEquals(0,cls.workflowCriteriaList.size());
+		System.assertEquals(0,cls.workflowCriteriaList.size());
+
         
         cls.addCriteria();
         System.assertEquals(0,cls.workflowCriteriaList.size());
-       // System.assertNotEquals(0,cls.workflowCriteriaList.size());
-        
-        cls.addCriteria();
-        System.assertEquals(0,cls.workflowCriteriaList.size());
-        //System.assertNotEquals(0,cls.workflowCriteriaList.size());
 
-        cls.counter = 0;
+
+       	cls.counter = 0;
         cls.deleteCriteria();
         System.assertEquals(0,cls.workflowCriteriaList.size());
-        //System.assertNotEquals(0,cls.workflowCriteriaList.size());
 
-        cls.counter = 0;
-        cls.deleteCriteria();
-        System.assertEquals(0,cls.workflowCriteriaList.size());
-       // System.assertNotEquals(0,cls.workflowCriteriaList.size());
         Test.stopTest();
     }
     
     
     /*
     * Method used to test the saveworkflowRule method
-    */ 
+    */
     static testMethod void test_saveworkflowRule(){
+    	//Insert Ruleset
+    	Rule_set__c ruleset = new Rule_set__c(Name='Test scoring rule',Object_Name__c='account',Active__c=true,Type__c='Standard');
+        insert ruleset;
+        
+        //Insert Workflow Rule
+        WorkflowRule__c workflowRulerecord = new WorkflowRule__c(Ruleset__c = ruleset.id,Name='Test scoring rule',Object_Name__c='account',Active__c=true,Filter_Logic__c='AND');
+        insert workflowRulerecord;
+        workflowRulerecord = [SELECT Id,Name,Order__c,Ruleset__r.Object_Name__c,Evaluation_Rule__c,Active__c,Object_Name__c,Filter_Logic__c,Effective_Date__c,Advanced_Filter__c,Expiration_Date__c FROM WorkflowRule__c Limit 1];
         Test.startTest();
         System.Test.setCurrentPage(new PageReference('/apex/x'));
 
-        WorkflowRuleCriteriaController cls = new WorkflowRuleCriteriaController(new ApexPages.standardController(new WorkflowRule__c()));
+        WorkflowRuleCriteriaController cls = new WorkflowRuleCriteriaController(new ApexPages.standardController(workflowRulerecord));
         // Save the scoring rule and check the errors
         // Negative cases 
-        System.assertEquals(null,cls.saveworkflowRule());
+        //System.assertEquals(null,cls.saveworkflowRule());
        
 
         // Positive  cases 
-        cls = new WorkflowRuleCriteriaController(new ApexPages.standardController(new WorkflowRule__c(Name='Test scoring rule',Object_Name__c='account',Active__c=true,Filter_Logic__c='AND')));
-        cls.showCriteria();
-        System.assertEquals(1,cls.workflowCriteriaList.size());
-        //System.assertNotEquals(0,cls.workflowCriteriaList.size());
+        cls = new WorkflowRuleCriteriaController(new ApexPages.standardController(workflowRulerecord));
+        cls.setUpWorkflowRuleCriteria(workflowRulerecord.id) ; 
+        System.assertEquals(0,cls.workflowCriteriaList.size());
+
         
         cls.addCriteria(); 
+        System.assertEquals(1,cls.workflowCriteriaList.size());
+
+
+        cls.addCriteria();
         System.assertEquals(2,cls.workflowCriteriaList.size());
-       // System.assertNotEquals(0,cls.workflowCriteriaList.size());
+
 
         cls.addCriteria();
         System.assertEquals(3,cls.workflowCriteriaList.size());
-        //System.assertNotEquals(0,cls.workflowCriteriaList.size());
-
+        
         cls.addCriteria();
         System.assertEquals(4,cls.workflowCriteriaList.size());
-        //System.assertNotEquals(0,cls.workflowCriteriaList.size());
 
         // Set the field name and values 
         cls.workflowCriteriaList[0].workflowRuleCriteria.criteria_object__c = 'account';
@@ -176,7 +189,7 @@ private class WorkflowRuleCriteriaControllerTest {
         cls.workflowCriteriaList[2].dataObject.put('numberofemployees',2000);
 
         // Set the fourth
-        cls.workflowCriteriaList[3].workflowRuleCriteria.criteria_object__c = 'account';
+        cls.workflowCriteriaList[3].workflowRuleCriteria.criteria_object__c = 'account'; 
         cls.workflowCriteriaList[3].workflowRuleCriteria.Field_Name__c = 'parentid';
         cls.workflowCriteriaList[3].workflowRuleCriteria.Field_API_Name__c = 'parentid';
         cls.workflowCriteriaList[3].isReference();
@@ -185,11 +198,12 @@ private class WorkflowRuleCriteriaControllerTest {
         cls.workflowCriteriaList[3].setParentField();
         cls.workflowCriteriaList[3].workflowRuleCriteria.Operator__c = 'equals';
         cls.workflowCriteriaList[3].dataObject.put('rating','High');
+        
 
         System.assertNotEquals(null,cls.saveworkflowRule());
 
         // Check the scoring rule and its criteria 
-        WorkflowRule__c workflowRule = [SELECT Id, Object_Name__c, Active__c,  
+        WorkflowRule__c workflowRule = [SELECT Id, Object_Name__c, Active__c, Ruleset__r.Object_Name__c, 
                                             (SELECT Id, Field_Name__c, Field_Type__c, Operator__c, Parent_Object_Field__c, 
                                                     Parent_Object_Name__c, Value__c
                                                         FROM Workflow_Rule_Criterias__r) 
@@ -202,7 +216,9 @@ private class WorkflowRuleCriteriaControllerTest {
 
         // Call the constructor again and check the values 
         cls = new WorkflowRuleCriteriaController(new ApexPages.standardController(workflowRule));
+        cls.setUpWorkflowRuleCriteria(workflowRulerecord.id) ;
         System.assertEquals(4,cls.workflowCriteriaList.size());
 
-    }
+    }  
+
 }

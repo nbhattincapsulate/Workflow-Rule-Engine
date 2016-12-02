@@ -75,6 +75,14 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>RuleEditControllerTest</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>ToolingAPIHttpImpl</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>WorkflowActionHelper</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -140,6 +148,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>WorkflowobjectEnableController</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>WorkflowobjectEnableControllerTest</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <custom>true</custom>
