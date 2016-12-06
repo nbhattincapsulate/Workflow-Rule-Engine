@@ -115,5 +115,53 @@ public with sharing class WorkflowTriggerUtility {
         //system.debug('====>'+soqlquery);
         return soqlquery;
     }
-     */    
+     */
+    //method called from the VF's action attribute to clone the WorkflowRule
+     public static WorkflowRule__c cloneWithWorkflowRule(WorkflowRule__c wf,Boolean doCopyCriteria, Boolean doCopyAction) 
+     {
+     	WorkflowRule__c newWF;  
+     	try{
+     		//copy the WorkflowRule - ONLY INCLUDE THE FIELDS YOU WANT TO CLONE
+     		 wf = [select Id, Name, Active__c, Advanced_Filter__c, Description__c, Effective_Date__c, Evaluation_Rule__c, Expiration_Date__c, Filter_Logic__c, FormattedFilterLogic__c,Object_Name__c,DisplayfilterLogic__c,Ruleset__c,Status__c, Order__c from WorkflowRule__c where id = :wf.id];
+     		 newWF = wf.clone(false);
+     		  if (Schema.sObjectType.WorkflowRule__c.isCreateable() ){
+     		 insert newWF;  
+     		  }
+     		 // set the id of the new wf created for testing
+             //newRecordId = newWF.id; 
+            if(doCopyCriteria){  
+            	
+            // copy over the line WorkflowRuleCriteria items - ONLY INCLUDE THE FIELDS YOU WANT TO CLONE
+            List<WorkflowRuleCriteria__c> items = new List<WorkflowRuleCriteria__c>();
+            for (WorkflowRuleCriteria__c wc : [Select w.Id, w.Child_Relationship_Name__c, w.Criteria_Object__c, w.CrossFormula__c, w.Evaluate_ChildCriteria_Using__c,w.Evaluate_Criteria_Result_To__c,w.Field_API_Name__c,w.Field_Name__c,w.Field_Relation__c,w.Field_Type__c,w.GlobalVariable__c,w.Operator__c,w.Parent_Object_Field__c,w.Parent_Object_Name__c,w.Relationship_Name__c,w.RuleObjectType__c,w.Sequence__c,w.Value__c From WorkflowRuleCriteria__c w where Workflow_Rule__c	 = :wf.id]) {
+     		WorkflowRuleCriteria__c newWC = wc.clone(false); 
+     		newWC.Workflow_Rule__c	 = newWF.id; 
+     		items.add(newWC); 
+          	}
+          	if (Schema.sObjectType.WorkflowRuleCriteria__c.isCreateable() ) {
+          insert items;
+            }  
+            }
+            if(doCopyAction){
+           
+           // copy over the line WorkflowRuleAction actionitems - ONLY INCLUDE THE FIELDS YOU WANT TO CLONE
+            List<WorkflowRuleAction__c> actionitems = new List<WorkflowRuleAction__c>();
+            for (WorkflowRuleAction__c wa : [Select a.Id, a.Action_Label__c, a.Action_Object__c, a.ActionType__c, a.Additional_Emails__c,a.Child_Relationship_Name__c,a.CrossObjectField__c,a.Email_Template__c,a.Email_Template_Folder__c,a.EmailTemplateName__c,a.External_Field_API_Name__c,a.ExternalId__c,a.Field_API_Name__c,a.Field_Name__c,a.Field_Type__c,a.Reference_Id__c,a.User_Owner_Id__c,a.Value__c From WorkflowRuleAction__c a where Workflow_Rule__c	 = :wf.id]) {
+     		WorkflowRuleAction__c newWA = wa.clone(false); 
+     		newWA.Workflow_Rule__c	 = newWA.id; 
+     		actionitems.add(newWA); 
+          	}
+          	if (Schema.sObjectType.WorkflowRuleCriteria__c.isCreateable()) {
+         	 insert actionitems;
+          	}  
+            } 
+          	return newWF; 
+		}
+		catch (Exception e){
+     	// roll everything back in case of error
+     		//Database.rollback(sp);  
+        	ApexPages.addMessages(e); 
+       		return null;
+         }
+     }     
 }

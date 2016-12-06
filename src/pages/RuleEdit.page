@@ -6,16 +6,16 @@
                 <apex:commandButton value="Save" action="{!onSave}"/>
                 <apex:commandButton value="Delete" action="{!delete}"/>
                 <apex:commandButton value="Cancel" action="{!cancel}"/>
-                <apex:commandButton value="Deactive" action="{!inactive}" rerender="outputpanel"/>
+                <apex:commandButton value="Deactive" action="{!deactive}" rerender="outputpanel"/>
             </apex:pageBlockButtons> 
-            <apex:pageBlockSection > 
+            <apex:pageBlockSection >   
                   
                      
                     <apex:inputfield value="{!rulesetRecord.name}" id="rulesetName" />
                 
                 
                      
-                    <apex:outputfield value="{!rulesetRecord.Active__c}" id="rulesetActive" />
+                    <apex:inputfield value="{!rulesetRecord.Active__c}" id="rulesetActive" />
                  
                      
                     <apex:inputfield value="{!rulesetRecord.Type__c}" id="rulesetType" rendered="{!NOT(isEdit)}" />
@@ -51,6 +51,9 @@
                     <apex:commandlink value="Delete" action="{!ruleEntryDelete}" rerender="outputfeilds"> 
                     <apex:param name="deleteruleEntryID" value="{!ruleEntries.ruleEntry.id}" assignTo="{!deleteruleEntryID}"/>
                      </apex:commandlink> 
+                      &nbsp;|&nbsp;  
+                     <apex:commandlink value="Clone" action="{!ruleclone}" rerender="outputfeilds">
+                      </apex:commandlink>    
                     <!--<apex:commandButton value="Delete" action="{!}"> 
                         <apex:param name="selectedruleEntryID" value="{!ruleEntries.ruleEntry.id}" assignTo="{!selectedruleEntryID}"/>
                     </apex:commandButton>

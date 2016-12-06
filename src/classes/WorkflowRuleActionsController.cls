@@ -80,12 +80,12 @@ public with sharing class WorkflowRuleActionsController {
         ruleActionId = stdcon.getId();
         newRuleAction = (WorkflowRuleAction__c)stdcon.getRecord();
         if (Schema.sObjectType.WorkflowRuleAction__c.fields.ActionType__c.isUpdateable() && Schema.sObjectType.WorkflowRuleAction__c.fields.ActionType__c.isCreateable()){ 
-        	newRuleAction.ActionType__c='Update Field';
+            newRuleAction.ActionType__c='Update Field';
         }
         Schema.DescribeSObjectResult objinfo = null;
         objOptions = new List<SelectOption>();
         edit=false;
-        isCrossFormula=false;  
+        isCrossFormula=false;   
         
         if(ruleActionId!=null){
          /** 
@@ -160,9 +160,9 @@ public with sharing class WorkflowRuleActionsController {
                      FROM    WorkflowRule__c 
                      WHERE id=:newRuleAction.workflow_rule__c];
              if(rule!=null){
-             	if (Schema.sObjectType.WorkflowRuleAction__c.fields.action_object__c.isUpdateable()){
-                	newRuleAction.action_object__c = rule.object_name__c;
-             	}
+                if (Schema.sObjectType.WorkflowRuleAction__c.fields.action_object__c.isUpdateable()){
+                    newRuleAction.action_object__c = rule.object_name__c;
+                }
                 objType = rule.object_name__c;
                 ruleObjType = objType;
                 
@@ -288,7 +288,7 @@ public with sharing class WorkflowRuleActionsController {
                 if(fieldType == null){
                     fieldType = descResField.getName();
                 }               
-                fieldOption.add(new SelectOption(descResField.getName(),fieldLabel));
+               fieldOption.add(new SelectOption(descResField.getName(),fieldLabel));
             }
             if(descResField.isCreateable() && !descResField.isNillable() && !descResField.isDefaultedOnCreate()){
                 requiredFields.put(descResField.getName().tolowerCase(),descResField.getLabel());
@@ -300,16 +300,18 @@ public with sharing class WorkflowRuleActionsController {
             fieldOption.add(new SelectOption('CrossObject','Cross Object Field'));
            
         }
+        
+        
         fieldOption= WorkflowRuleUtils.selectOptionSortByLabel(fieldOption);
        
         
         String fieldName = newRuleAction.Field_Name__c!=null ? newRuleAction.Field_Name__c:newRuleAction.field_API_Name__c;
        
-        		if(fieldName != null && fieldName != ''){
+                if(fieldName != null && fieldName != ''){
             
-            	fieldType = fieldName;
-            	if (Schema.sObjectType.WorkflowRuleAction__c.fields.Field_API_Name__C.isUpdateable()){ 
-            			newRuleAction.Field_API_Name__C = fieldType;
+                fieldType = fieldName;
+                if (Schema.sObjectType.WorkflowRuleAction__c.fields.Field_API_Name__C.isUpdateable()){ 
+                        newRuleAction.Field_API_Name__C = fieldType;
         } 
        }
        
@@ -376,11 +378,11 @@ public with sharing class WorkflowRuleActionsController {
            
            calculateFormulaForReference='';
             
-           	if(fieldType=='CrossObject'){
+            if(fieldType=='CrossObject'){
                isCrossFormula=true;
                newRuleAction.Field_Type__c = 'string';
                newRuleAction.Field_API_Name__c = 'CrossObject';
-           	}
+            }
           
            else 
            
@@ -460,10 +462,10 @@ public with sharing class WorkflowRuleActionsController {
           
             newRuleAction.Action_Object__c = objtype.split('~')[0];
             if (Schema.sObjectType.WorkflowRuleAction__c.fields.Child_Relationship_name__c .isUpdateable() && Schema.sObjectType.WorkflowRuleAction__c.fields.Child_Relationship_name__c .isCreateable()){
-            	newRuleAction.Child_Relationship_name__c = objtype.split('~').size()>1?objtype.split('~')[1]:null;
+                newRuleAction.Child_Relationship_name__c = objtype.split('~').size()>1?objtype.split('~')[1]:null;
             }
                if (Schema.sObjectType.WorkflowRuleAction__c.fields.Field_Name__c .isUpdateable() && Schema.sObjectType.WorkflowRuleAction__c.fields.Field_Name__c.isCreateable()){ 
-            		newRuleAction.Field_Name__c =  fieldType; 
+                    newRuleAction.Field_Name__c =  fieldType; 
               } 
             //updated the logic..instead calling validate merge field we directly call isValidValue to allow bo
              
@@ -488,12 +490,12 @@ public with sharing class WorkflowRuleActionsController {
                          
                         
                          if (calculateFormulaForReference== null || calculateFormulaForReference=='') {
-                         	if (Schema.sObjectType.WorkflowRuleAction__c.fields.Reference_Id__c.isUpdateable()){
+                            if (Schema.sObjectType.WorkflowRuleAction__c.fields.Reference_Id__c.isUpdateable()){
                                newRuleAction.Reference_Id__c  =String.valueOf(sobjInstance.get(newRuleAction.field_API_Name__c));
-                         	}
-                         	if (Schema.sObjectType.WorkflowRuleAction__c.fields.Value__c.isUpdateable() && Schema.sObjectType.WorkflowRuleAction__c.fields.Value__c.isCreateable() ){
+                            }
+                            if (Schema.sObjectType.WorkflowRuleAction__c.fields.Value__c.isUpdateable() && Schema.sObjectType.WorkflowRuleAction__c.fields.Value__c.isCreateable() ){
                                newRuleAction.Value__c =selectedRecordName(newRuleAction.Reference_Id__c);
-                         	}
+                            }
                           }
                          else {
                           newRuleAction.Reference_Id__c =calculateFormulaForReference;
@@ -685,8 +687,8 @@ public with sharing class WorkflowRuleActionsController {
      */
      
     public void deleteRec(){     
-    	
-    		 
+        
+             
         if(selectedRecordId != null && selectedRecordId != ''){
             Integer selectedIndex = -1;
             for(selectedIndex = 0; selectedIndex < lstInsRelRec.size() ;selectedIndex++){
@@ -702,7 +704,7 @@ public with sharing class WorkflowRuleActionsController {
             if(info.Id != null){
                 WorkflowValues_for_Insert_Record__c delRec = new WorkflowValues_for_Insert_Record__c(id= info.Id);
                 if (Schema.sObjectType.WorkflowRuleAction__c.isDeletable()){  
-                	Database.delete(delRec,false);
+                    Database.delete(delRec,false);
                 }
                 lstInsRelRec = new List<WorkflowValues_for_Insert_Record__c>();
                 populatedRelatedRecInfo(newruleAction.Id);
@@ -713,7 +715,7 @@ public with sharing class WorkflowRuleActionsController {
             }
             populateFields(objType);
         }
-    	
+        
     }
      
     

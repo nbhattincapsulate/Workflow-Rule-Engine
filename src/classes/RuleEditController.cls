@@ -1,6 +1,7 @@
 public with sharing class RuleEditController {
 
     public Rule_set__c rulesetRecord{get;set;}
+    public WorkflowRule__c wf{get;set;}
     public list<workFlowRuleInner> workFlowRuleEntrieInnerList{get;set;}
     public Boolean isEdit{get;set;}
     public String selectedruleEntryID{get;set;} 
@@ -9,7 +10,9 @@ public with sharing class RuleEditController {
     
     ApexPages.StandardController stdController;
     
-    
+    public RuleEditController(){
+        
+    }
     public List<SelectOption> getOrgObjects(){
         List<SelectOption> options = new List<SelectOption>();
                 for(ApexTrigger existingTrigger : [SELECT ID,Name,TableEnumOrId from ApexTrigger where Name LIKE 'IncapRule%' And Status = 'Active']){
@@ -66,11 +69,19 @@ public with sharing class RuleEditController {
         isEdit = true; 
     }
     // method to deactive 
-    public void inactive(){ 
+    public void deactive(){  
         rulesetRecord.Active__c=false;
-        update rulesetRecord; 
-    }  
-    // method to remove RuleEntry 
+        update rulesetRecord;  
+    }    
+    
+    //method to clone
+        public static void ruleclone(){
+        //public WorkflowRule__c ruleEntry{get;set;}
+        WorkflowRule__c newWF;    
+        
+         WorkflowTriggerUtility.cloneWithWorkflowRule(newWF,true,true); 
+       } 
+    // method to remove RuleEntry   
     public void ruleEntryDelete(){ 
         if(Apexpages.currentpage().getparameters().get('deleteruleEntryID') != null){
          if (Schema.sObjectType.WorkflowRule__c.isDeletable()){
