@@ -1,7 +1,6 @@
 public with sharing class RuleEditController {
 
     public Rule_set__c rulesetRecord{get;set;}
-    public WorkflowRule__c wf{get;set;}
     public list<workFlowRuleInner> workFlowRuleEntrieInnerList{get;set;}
     public Boolean isEdit{get;set;}
     public String selectedruleEntryID{get;set;} 
@@ -76,10 +75,8 @@ public with sharing class RuleEditController {
     
     //method to clone
         public static void ruleclone(){
-        //public WorkflowRule__c ruleEntry{get;set;}
         WorkflowRule__c newWF;    
-        
-         WorkflowTriggerUtility.cloneWithWorkflowRule(newWF,true,true); 
+        WorkflowTriggerUtility.cloneWithWorkflowRule(newWF,true,true); 
        } 
     // method to remove RuleEntry   
     public void ruleEntryDelete(){ 

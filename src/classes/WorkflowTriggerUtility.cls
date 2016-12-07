@@ -162,6 +162,14 @@ public with sharing class WorkflowTriggerUtility {
      		//Database.rollback(sp);  
         	ApexPages.addMessages(e); 
        		return null;
-         }
-     }     
+         } 
+     }  
+         // To track all the rules applied - Audit tracking for rule evaluation
+     public static AppliedRule__c TrackWorkflowRule(String objId,String ruleId)   {
+     	 AppliedRule__c newAppliedRule = new AppliedRule__c();  
+     	 newAppliedRule.Object_ID__c = objId;   
+     	 newAppliedRule.WorkflowRule__c = ruleId; 
+         newAppliedRule.User__c = UserInfo.getUserId();  
+     	 return newAppliedRule;        
+    }  
 }

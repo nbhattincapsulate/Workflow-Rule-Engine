@@ -24,6 +24,10 @@
             <translation><!-- Insert Related Object --></translation>
         </picklistValues>
         <picklistValues>
+            <masterLabel>Invoke Apex</masterLabel>
+            <translation><!-- Invoke Apex --></translation>
+        </picklistValues>
+        <picklistValues>
             <masterLabel>Notification</masterLabel>
             <translation><!-- Notification --></translation>
         </picklistValues>

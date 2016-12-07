@@ -329,6 +329,21 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>AppliedRule__c.Object_ID__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>AppliedRule__c.User__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>AppliedRule__c.WorkflowRule__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>Asset.AccountId</field>
         <readable>true</readable>
@@ -1660,6 +1675,9 @@
     </fieldPermissions>
     <layoutAssignments>
         <layout>Account-Account Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>AppliedRule__c-Rule Track Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
         <layout>Asset-Asset Layout</layout>

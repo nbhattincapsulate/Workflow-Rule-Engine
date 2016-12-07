@@ -52,8 +52,8 @@
                     <apex:param name="deleteruleEntryID" value="{!ruleEntries.ruleEntry.id}" assignTo="{!deleteruleEntryID}"/>
                      </apex:commandlink> 
                       &nbsp;|&nbsp;  
-                     <apex:commandlink value="Clone" action="{!ruleclone}" rerender="outputfeilds">
-                      </apex:commandlink>    
+                     <apex:commandlink value="Clone" action="{!ruleclone}" >
+                      </apex:commandlink>     
                     <!--<apex:commandButton value="Delete" action="{!}"> 
                         <apex:param name="selectedruleEntryID" value="{!ruleEntries.ruleEntry.id}" assignTo="{!selectedruleEntryID}"/>
                     </apex:commandButton>
@@ -71,7 +71,7 @@
                     <apex:outputField value="{!ruleEntries.ruleEntry.Name}"/>
                 </apex:column>
                 <apex:column headerValue="Conditions">
-                    <apex:outputText value="{!ruleEntries.entryCriteria}"/>
+                    <apex:outputText value="{!ruleEntries.entryCriteria}"/> 
                 </apex:column>
                 <apex:column headerValue="Actions">
                     <apex:outputText value="{!ruleEntries.actions}"/>
