@@ -16,7 +16,7 @@
 
    <apex:form id="frm">
          <apex:actionStatus id="eventStatus"  >
-         <apex:facet name="start">
+         <apex:facet name="start">  
           <apex:outputPanel >
                         <div style="width:100%;height:100%;position:absolute;top:0;left:0;">
                             <div style="position:absolute;top:50%;left:50%">
@@ -40,9 +40,9 @@
                     <Apex:panelGroup >
                     <apex:actionSupport >
                         <apex:inputField id="actionType" value="{!newRuleAction.ActionType__c}" required="true" rendered="{!!(edit)}">
-                            <apex:actionsupport event="onchange" rerender="optPan,sendemail_panel,pgSect,chatterNotification,alterNotification" status="eventStatus"></apex:actionsupport>
+                            <apex:actionsupport event="onchange" rerender="optPan,sendemail_panel,pgSect,chatterNotification,alterNotification,invokeapex" status="eventStatus"></apex:actionsupport>
                         </apex:inputField>
-                    </apex:actionSupport>
+                    </apex:actionSupport> 
                     </Apex:panelGroup>
                     
                 </apex:pageblocksectionItem>
@@ -148,7 +148,7 @@
                     </apex:selectList>
                 </apex:pageBlockSection>
             </apex:outputPanel>
-            
+             
             
             
             <!-- SEND EMAIL INFO -->
@@ -212,11 +212,13 @@
                       <apex:param name="folderId" value=""/>
                   </apex:actionFunction>
                   
+                 
+                  
             </apex:outputPanel>
             
             <!-- Alert /Error Notification Message -->
             <apex:outputPanel id="alterNotification">
-            	<apex:pageBlockSection id="alterNotification1" rendered="{!(newRuleAction.ActionType__c!= null &&  (UPPER(newRuleAction.ActionType__c) == 'NOTIFICATION' || UPPER(newRuleAction.ActionType__c) == 'ERROR'))}" title="Set the notification message">
+                <apex:pageBlockSection id="alterNotification1" rendered="{!(newRuleAction.ActionType__c!= null &&  (UPPER(newRuleAction.ActionType__c) == 'NOTIFICATION' || UPPER(newRuleAction.ActionType__c) == 'ERROR'))}" title="Set the notification message">
                   <apex:pageBlockSectionitem >
                     <apex:outputLabel >Message</apex:outputLabel>   
                     <apex:inputField value="{!newRuleAction.Long_Value__c}" />
@@ -224,14 +226,27 @@
                 </apex:pageBlockSection>
             </apex:outputPanel>
             
+             <!-- List Apex Class -->
+             <apex:outputPanel id="invokeapex" onclick="{!apexclassList}"> 
+             <apex:pageBlockSection id="invkapex"  rendered="{!(newRuleAction.ActionType__c!= null &&  (UPPER(newRuleAction.ActionType__c) == 'INVOKE APEX'))}" title="List of ApexClass" >
+               <apex:actionSupport action="{!GetAllApexClasses}" event="onclick"/>
+           <apex:outputLabel >ApexClass List</apex:outputLabel>  
+            
+           <apex:pageBlockTable value="{!apexclassList}" var="apex">
+                
+                <apex:column value="{!apex.name}"/>
            
+            </apex:pageblockTable>
+                          
+            </apex:pageBlockSection>     
+             </apex:outputPanel>
             
              <apex:outputPanel id="chatterNotification">
                 <apex:pageBlockSection id="sendemail1" rendered="{!(newRuleAction.ActionType__c!= null && UPPER(newRuleAction.ActionType__c) == 'CHATTER NOTIFICATION')}" title="Select the user /group to send">
                   <apex:pageBlockSectionitem >
                     <apex:outputLabel >Message</apex:outputLabel>   
                     <apex:inputField value="{!newRuleAction.Long_Value__c}" />
-                </apex:pageBlockSectionitem>
+                </apex:pageBlockSectionitem> 
                  <apex:pageBlockSectionitem > 
                      <apex:outputLabel >Send To</apex:outputLabel>  
                      <apex:panelgroup >

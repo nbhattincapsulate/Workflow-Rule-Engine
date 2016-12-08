@@ -20,8 +20,7 @@ public with sharing class WorkflowRuleEvaluation {
     
     // Map of child relationship name and field in child for parent
     public static Map<String,String> childParentRelationshipField = new Map<string,String>();
-    
-    
+     
     public static Map<Id,SObject> toUpdateSObject;      
     
     public static Boolean failTrigger = false;
@@ -55,7 +54,7 @@ public with sharing class WorkflowRuleEvaluation {
         //list of rules
         List<WorkflowRule__c> ruleList = new list<WorkflowRule__c>();
         for(Rule_set__c rulesetrecord: rulesetList){
-        	ruleList.addall(rulesetrecord.Workflow_Rules__r);
+            ruleList.addall(rulesetrecord.Workflow_Rules__r);
         }
         if(ruleList.size()==0) 
         return;
@@ -142,6 +141,9 @@ public with sharing class WorkflowRuleEvaluation {
             Map<String,Map<String,List<WorkflowRuleAction__c>>> usersInSendEmailAction =new Map<String,Map<String,List<WorkflowRuleAction__c>>> ();
             Map<String,Map<String,List<WorkflowRuleAction__c>>> grpsInSendEmailAction = new Map<String,Map<String,List<WorkflowRuleAction__c>>> ();
             
+        //Create blank list for applied rules    
+       List<AppliedRule__c> trackrule = new List<AppliedRule__c>();
+     
             
            //start the evaluation for each rule
             for(SObject so:sobjectRecords){
@@ -206,15 +208,21 @@ public with sharing class WorkflowRuleEvaluation {
                                         //error time
                                         throw new WorkflowException(action.long_value__c);
                                     }
-                                
-                                
-                            }//end rule action
-                        
-                    }//end isvalid
+                             //insert list values in applied rules list.       
+                           WorkflowTriggerUtility.TrackWorkflowRule(rule.Id,so.Id); 
+                           AppliedRule__c  Appliedrule= new AppliedRule__c (WorkflowRule__c =rule.Id,Object_ID__c = so.Id);  
+                           trackrule.add(Appliedrule);
+                           System.debug('----------------------------Track => '+Appliedrule+' ----------------------------');
+                              
+                           }//end rule action
+                      }//end isvalid
                     System.debug('----------------------------WorkflowRule Exit => '+ rule.Id +'----------------------------');
                 }//end workflow rule
             }//end sobject records
             
+            //insert applied rules.
+           insert trackrule;     
+            System.debug('----------------------------Track WorkflowRule => '+trackrule+'----------------------------'); 
             
             if(toUpdateSObject.size()>0) update toUpdateSObject.values();
         

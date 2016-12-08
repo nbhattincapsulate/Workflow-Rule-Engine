@@ -4,15 +4,20 @@ public with sharing class WorkflowRuleActionsController {
     public WorkflowRule__c rule ;
     public String objType   {get;set;}
     public String fieldType {get;set;}
+    public String name{get;set;}
+    
     
     public List<SelectOption> objOptions    {get;set;}
     public List<SelectOption> allObjectOptions    {get;set;}
     
     Set<String> setRelatedObjName;
     
+    public List<ApexClass> apexclassList{get;set;}
+    
+    
     public List<SelectOption> fieldOption   {get;set;} 
     
-    public List<List<SelectOption>> emailoptions  {get;set;}
+    public List<List<SelectOption>> emailoptions  {get;set;} 
     
     //25/12 adding new variable to hold id-name for email options
     Map<Id,String> user_queue_names = new Map<Id,String>();
@@ -20,8 +25,8 @@ public with sharing class WorkflowRuleActionsController {
     public List<List<SelectOption>> emailTemplateOptions  {get;set;}
     
     String ruleActionId;
-    public boolean edit {get;set;}
-    public String helpTextMF{get;set;}
+    public boolean edit {get;set;} 
+    public String helpTextMF{get;set;} 
     
     Map<String, Schema.SObjectField> mapField;
     Map<String, Schema.SObjectField> maplookupField;
@@ -187,8 +192,8 @@ public with sharing class WorkflowRuleActionsController {
             
                 sobjInstance.put(newRuleAction.Field_API_Name__c,newRuleAction.Long_Value__c);
             }
-            else{
-                
+            else{ 
+                 
                 try{
                      if(newRuleAction.Field_Type__c!= null && newRuleAction.Field_Type__c.equalsIgnoreCase('reference')){
                 
@@ -221,19 +226,29 @@ public with sharing class WorkflowRuleActionsController {
                 }
             }            
         }
-     }
+     }  
+     
+     //method to list all apex class
+      public void GetAllApexClasses(){
+                apexclassList = new List<ApexClass>();
+                apexclassList = [SELECT ID,Name from ApexClass];
+                
+                
+               //insert apexclassList;
+                 
+    }
   
     public PageReference  getFieldNames(){
-        
+         
          objType= Apexpages.currentPage().getParameters().get('parentName');
          
          lstInsRelRec = new List<WorkflowValues_for_Insert_Record__c>();
          requiredFields = new Map<String,String>();
          fieldType = null;
-         newRuleAction.Field_API_Name__c = '';
+         newRuleAction.Field_API_Name__c = ''; 
          populateFields(objType.split('~')[0]);
         
-         return null; 
+         return null;   
     }
 
     /** 
@@ -452,7 +467,7 @@ public with sharing class WorkflowRuleActionsController {
             return(new PageReference('/apex/WorkflowRuleActions'));
                    
     }
-    
+     
     
     
     private Boolean doSave(){
@@ -616,7 +631,9 @@ public with sharing class WorkflowRuleActionsController {
         }   
         return true;
     }
- 
+    
+                
+   
     public void createRelateRec(){
         WorkflowValues_for_Insert_Record__c insRelRec = new WorkflowValues_for_Insert_Record__c();
         insRelRec.Name = fieldType;
