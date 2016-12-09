@@ -12,6 +12,53 @@ public with sharing class WorkflowTriggerUtility {
         return response;        
     }
     
+    
+    public static void parseApexClass(HttpResponse response){
+    	String jsonstr = response.getBody();
+    	JSONParser parser = JSON.createParser(jsonstr);
+    	while (parser.nextToken() != null) {
+    		if(parser.getCurrentToken() == JSONToken.START_OBJECT){
+    			while (parser.nextToken() != null){
+    				system.debug('====' + parser.getCurrentToken());
+    				if (parser.getCurrentToken() == JSONToken.START_ARRAY) {
+    					while (parser.nextToken() != null){
+    						if (parser.getCurrentToken() == JSONToken.START_OBJECT) {
+    							Innerapexclass inapex = (Innerapexclass)parser.readValueAs(Innerapexclass.class);
+    					 		system.debug('Serialized invoice: ' + inapex.id); 
+    					 		system.debug('Serialized invoice: ' + inapex.name); 
+    					 		//system.debug('S: ' + inapex.symbol); 
+    					 		parser.nextToken();
+    					 		SymbolTable iex = (SymbolTable)parser.readValueAs(SymbolTable.class);
+    					 		system.debug('S: ' + iex.reference);
+    					}   
+    				}  
+    				} 
+    				  
+    		}  
+    	 }     
+  	  }  
+    }    
+    
+    
+    
+    //inner class for json structure 
+    public class Innerapexclass{
+    	String ID;
+    	String Name; 
+    } 
+    
+    public class SymbolTable{  
+    		String ID;
+   			String Constructors;
+   			String Reference;
+   			String Innerclass;
+   			String Interfac; 
+    	}
+    	
+    	public class method{
+    		String annotations;
+    	}
+   
     //Method to prepare HttpRequest
     //@param: 
     //@return: Httprequest
@@ -22,9 +69,12 @@ public with sharing class WorkflowTriggerUtility {
         for(String header : reqHeader.keyset()){
             request.setHeader(header , reqHeader.get(header));
         }
-        request.setBody(reqBody);
+        if(reqBody != ''){
+        	request.setBody(reqBody);
+        }
+        
         system.debug('==request===>'+reqBody);
-        return request;     
+        return request;      
     }
     
     //Method to prepare Trigger Creation Request
@@ -38,16 +88,23 @@ public with sharing class WorkflowTriggerUtility {
         gen.writeStartObject();
         gen.writeStringField('Name', 'IncapRule'+customsObjectName+'Trigger');
         gen.writeStringField('TableEnumOrId', sObjectName);
-        String bodyString = 'trigger IncapRule'+customsObjectName+'Trigger on '+sObjectName+'(after insert,after update){';
-        bodyString += 'Set<Id> Ids=new Set<Id>(); String sobjName=\''+sObjectName+'\';';
-        bodyString += 'for ('+sObjectName+' record:trigger.new){ Ids.add(record.Id); }';
-        bodyString += 'Boolean evaluate = WorkflowRuleEvaluation.EvaluationIsRunning;';
-        bodyString += 'try{ if (!evaluate){ WorkflowRuleEvaluation.startWorkflow(Ids,sobjName,Trigger.isInsert);}}';
-        bodyString += 'catch(Exception e){if(Test.isRunningTest()){} else{throw(e);  }}}';
+        String bodyString = 'trigger IncapRule'+customsObjectName+'Trigger on '+sObjectName+'(after insert,after update)';
+        bodyString +='\n';
+        bodyString +='{';
+        bodyString +='\n';  
+        bodyString += '    WorkflowTriggerUtility.triggerExecute(trigger.new,Trigger.isInsert);';   
+        bodyString +='\n';         
+        bodyString += '}';   
+        //bodyString += 'Set<Id> Ids=new Set<Id>(); String sobjName=\''+sObjectName+'\';';
+       // bodyString += 'for ('+sObjectName+' record:trigger.new){ Ids.add(record.Id); }';
+       // bodyString += 'Boolean evaluate = WorkflowRuleEvaluation.EvaluationIsRunning;';
+       // bodyString += 'try{ if (!evaluate){ WorkflowRuleEvaluation.startWorkflow(Ids,sobjName,Trigger.isInsert);}}';
+      //  bodyString += 'catch(Exception e){if(Test.isRunningTest()){} else{throw(e);  }}}';
         gen.writeStringField('Body', bodyString);
         gen.writeEndObject();
-        system.debug('===json===>'+gen.getAsString()); 
-        return gen.getAsString();
+        system.debug('===json===>'+bodyString);
+        system.debug('===json===>'+gen.getAsString());  
+        return gen.getAsString();     
         
     }
     
@@ -89,6 +146,22 @@ public with sharing class WorkflowTriggerUtility {
         String requestBody = createCreateTriggerBody(sObjectName);
         return sendRequesttoServer(prepareHttprequest(endPointURL,'POST',headerMap,requestBody));
     }
+    
+    
+    //method to return apexclass list with symbol table
+    
+    
+    
+   public static HttpResponse getAllApexclass(){ 
+        WorkflowConfiguration__c configuration = WorkflowConfiguration__c.getValues('Settings');
+        String endPointURL = configuration.Base_Url__c + '/services/data/v38.0/tooling/query/?q=Select+Id,Name,SymbolTable+From+ApexClass';
+        map<String,String> headerMap = new map<String,String>(); 
+        headerMap.put('Content-Type', 'application/json'); 
+        headerMap.put('Authorization', 'Bearer ' + UserInfo.getSessionId());   
+        //String requestBody = createCreateTriggerBody(sObjectName);
+        return sendRequesttoServer(prepareHttprequest(endPointURL,'GET',headerMap,''));
+    } 
+     
     /*
     //Method to get query all the fields for any sObject
     //@param: objectapiname
@@ -172,4 +245,30 @@ public with sharing class WorkflowTriggerUtility {
          newAppliedRule.User__c = UserInfo.getUserId();  
      	 return newAppliedRule;        
     }  
+    public static void triggerExecute(list<sObject> sobjectList, Boolean isInsert){
+	 Set<Id> Ids=new Set<Id>();
+	 String sobjName = '';
+	 
+	 for (sObject record:sobjectList)
+	 { 
+	  	Ids.add(record.Id);
+	  	sobjName = (record.Id).getSObjectType().getDescribe().getName();
+	  	 
+ 	 }
+ 		Boolean evaluate = WorkflowRuleEvaluation.EvaluationIsRunning;
+ 	try{ 
+  		if (!evaluate)
+  		{ 
+   			WorkflowRuleEvaluation.startWorkflow(Ids,sobjName,isInsert);       
+  		}
+ 	}catch(Exception e)
+ 	{
+ 		if(Test.isRunningTest()){}    
+  		else
+  		{ 
+  			throw(e);       
+ 		}
+ 	}
+}
+    
 }
